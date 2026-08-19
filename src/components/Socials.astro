@@ -96,6 +96,9 @@ const { class: className } = Astro.props;
     width: 16px;
     height: 16px;
   }
+  /* Fuori scala di proposito: non è una soglia di layout ma il punto in
+     cui la riga di social non ci sta più. Allinearla a 700px nasconderebbe
+     le icone su altri 80px di viewport. */
   @media (max-width: 620px) {
     .socials a:nth-child(n + 3) {
       display: none;

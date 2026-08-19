@@ -1,3 +1,15 @@
+/* Breakpoint: 700 / 900 / 1000 / 1100px. Non possono essere custom
+   property — `@media (min-width: var(--x))` non è CSS valido, le
+   custom property non si leggono nelle condizioni di media query — quindi
+   questa è una convenzione da applicare a mano nei componenti, non un
+   token utilizzabile con var().
+   Per i max-width usare il complemento con due decimali (699.98, 899.98,
+   999.98, 1099.98), non l'intero: evita un buco fra un max-width e il
+   min-width successivo sui viewport frazionari.
+   Eccezioni note, fuori scala di proposito: Hero.astro (max-height, non
+   una larghezza), Socials.astro (max-width: 620px, nasconde contenuto
+   anziché riorganizzarlo), ComeLavoriamo.astro (query desktop-first,
+   l'unica del progetto). Dettagli in design/design-system.md. */
 :root {
   /* Marca */
   --sage: #92b079;

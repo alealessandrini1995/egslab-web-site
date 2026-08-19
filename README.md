@@ -161,7 +161,7 @@ Le ulteriori pagine del progetto vengono aggiunte in base alla struttura definit
 
 Design system globale, importato una sola volta in `BaseLayout.astro`.
 
-- `base/` — reset, token del design system (colori, tipografia, spaziature, breakpoint), tipografia globale.
+- `base/` — reset, token del design system (colori, tipografia, spaziature), tipografia globale. La scala breakpoint è documentata come commento in cima a `base/tokens.css` (non può essere un token: `@media` non legge `var()`).
 - `layout/` — strutture condivise come il container.
 
 Gli stili specifici di un componente o di una sezione restano invece negli `<style>` scoped dei rispettivi file `.astro`.

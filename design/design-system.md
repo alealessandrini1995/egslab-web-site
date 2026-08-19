@@ -87,17 +87,21 @@ Scala su base 8px, da usare sempre al posto di valori hardcoded:
 
 ## Breakpoint
 
-Non esistono token dedicati ai breakpoint (i `@media` sono scritti con valori in px direttamente nei componenti). I valori realmente in uso nel codice:
+Non esistono token dedicati ai breakpoint: `@media (min-width: var(--x))` non è CSS valido, le custom property non si leggono nelle condizioni di media query. La scala è quindi una convenzione applicata a mano nei componenti, con i valori scritti in px direttamente nei `@media`.
 
-| Breakpoint | Frequenza | Uso tipico |
+| Livello | Valore | Intento di design |
 |---|---|---|
-| `min-width: 900px` | 7 componenti | Passaggio a griglie multi-colonna (blog, sezioni) |
-| `min-width: 1060px` | 4 componenti | Layout desktop di Footer e sezioni a fasce |
-| `min-width: 980px` | 4 componenti | Varie |
-| `min-width: 720px` | 1 | Footer, 2 colonne |
-| altri valori isolati | 620/600/680/700/820/960/979px | Aggiustamenti puntuali di singoli componenti |
+| sm | `700px` | Telefono → tablet: primi split a 2 colonne |
+| md | `900px` | Tablet → laptop: griglie a 3 colonne, rail, intestazioni divise |
+| lg | `1000px` | Laptop: layout "feature" a 2 colonne asimmetriche |
+| xl | `1100px` | Wide: griglia densa del Footer con colonna QR laterale |
 
-Non è un sistema di breakpoint standardizzato: se si aggiungono nuovi componenti, preferire i valori già in uso (900px e 1060px sono i più ricorrenti) invece di introdurne di nuovi.
+Per i `max-width` si usa il complemento con due decimali (`699.98`, `899.98`, `999.98`, `1099.98`), non l'intero: con `899px` un viewport a 899.5px non soddisferebbe né quello né `min-width: 900px`, lasciando un buco.
+
+**Eccezioni fuori scala, deliberate:**
+- `Hero.astro` — `max-height: 700px`: è un'altezza, non una larghezza, non ha relazione con la scala nonostante condivida il numero.
+- `Socials.astro` — `max-width: 620px`: nasconde le icone social dalla terza in poi invece di riorganizzare il layout. Allinearla a 700px le nasconderebbe su altri 80px di viewport, una scelta di contenuto e non di layout.
+- `ComeLavoriamo.astro` — unico componente desktop-first del progetto (il layout a 6 colonne è la base, un `max-width: 899.98px` lo ribalta in verticale). Lasciato così per non riscrivere le trasformazioni `scaleX`/`scaleY` dei connettori con un guadagno solo stilistico.
 
 ## Raggi e ombre
 

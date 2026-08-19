@@ -24,7 +24,7 @@ Non esiste una suite di test: la verifica di consegna è `npm run build`.
 ## Regole tecniche
 
 - Non introdurre framework UI (React, Vue, Svelte...) salvo esplicita richiesta: i componenti `.astro` bastano per markup, stile e script.
-- Mai valori hardcoded per colori, spaziature o breakpoint: usare sempre i token definiti in `src/styles/base/tokens.css`.
+- Mai valori hardcoded per colori o spaziature: usare sempre i token definiti in `src/styles/base/tokens.css`. I breakpoint non possono essere custom property (`@media` non legge `var()`): seguire la scala 700/900/1000/1100px documentata in cima a `tokens.css` e in `design/design-system.md`, non introdurne di nuovi.
 - Nome del sito, voci di navigazione e contatti si modificano solo in `src/config/site.ts`, mai duplicati nelle pagine o nei componenti.
 - Ogni pagina deve passare `title` a `BaseLayout`; TypeScript strict lo impone al build.
 - Le immagini vanno in `src/assets/images/` (ottimizzate da Astro), non in `public/`. I font self-hosted vanno in `src/assets/fonts/`, per lo stesso motivo: referenziati via `url()` nel CSS, devono passare dalla pipeline di Vite per ricevere hash e base path corretti. `public/` è riservata a file da servire as-is (favicon, robots.txt).

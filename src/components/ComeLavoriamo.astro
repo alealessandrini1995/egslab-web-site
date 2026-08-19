@@ -242,8 +242,12 @@ import { fasi } from '../data/processo';
   }
 
   /* Sotto i 900px il percorso si rialza in verticale: sei colonne da
-     186px diventano 60 e la fila non regge. */
-  @media (max-width: 899px) {
+     186px diventano 60 e la fila non regge. Eccezione desktop-first
+     consapevole: il layout orizzontale è la base e questa query lo
+     ribalta, al contrario del resto del progetto (mobile-first). Non
+     invertito per non riscrivere le trasformazioni scaleX/scaleY dei
+     connettori. */
+  @media (max-width: 899.98px) {
     .pcs__nastro {
       flex-direction: column;
       align-items: stretch;
