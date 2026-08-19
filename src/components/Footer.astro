@@ -22,7 +22,7 @@ const year = new Date().getFullYear();
           </svg>
         </span>
         <p>
-          Chiavari (GE), 16043<br />
+          {site.address.locality} ({site.address.region}), {site.address.postalCode}<br />
           <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
         </p>
         <p><a class="link" href={site.contact.whatsapp} target="_blank" rel="noopener">Scrivici su WhatsApp</a></p>
@@ -66,7 +66,7 @@ const year = new Date().getFullYear();
     </div>
 
     <div class="footer-bottom">
-      <p>© {year} egslab — laboratorio digitale · Chiavari (GE) · Liguria · Lavoriamo in tutta Italia</p>
+      <p>© {year} {site.name} — laboratorio digitale · {site.address.locality} ({site.address.region}) · Liguria · Lavoriamo in tutta Italia</p>
       <p><a href={withBase('/privacy/')}>Privacy</a> · <a href={withBase('/cookie/')}>Cookie</a></p>
     </div>
   </div>
@@ -77,7 +77,7 @@ const year = new Date().getFullYear();
     position: relative;
     overflow: hidden;
     background: var(--night);
-    color: #fff;
+    color: var(--on-dark);
     /* Nessun raggio, come l'hero: il piè di pagina è largo quanto lo
        schermo, gli angoli alti squadrati diventano una linea d'orizzonte
        netta contro il bianco invece che due angoli a 90 gradi. */
@@ -131,7 +131,7 @@ const year = new Date().getFullYear();
     font-size: 14px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: #fff;
+    color: var(--on-dark);
     margin-bottom: var(--s-3);
   }
   .fcard ul {
@@ -148,7 +148,7 @@ const year = new Date().getFullYear();
      freccia, sommando una sottolineatura statica alla riga animata che
      .link disegna già da sé. */
   .fcard a:not(.link):hover {
-    color: #fff;
+    color: var(--on-dark);
     text-decoration: underline;
   }
   .fcard p {
@@ -226,7 +226,7 @@ const year = new Date().getFullYear();
   .qr-slot {
     aspect-ratio: 1;
     border-radius: var(--r-sm);
-    background: #fff;
+    background: var(--bg);
     width: min(100%, 280px);
     overflow: hidden;
     padding: 10px;

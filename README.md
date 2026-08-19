@@ -41,7 +41,6 @@ npm run preview     # anteprima locale della build di produzione
 ├── public/
 │   ├── favicon.svg
 │   ├── robots.txt
-│   ├── fonts/
 │   └── icons/
 │
 └── src/
@@ -75,7 +74,8 @@ npm run preview     # anteprima locale della build di produzione
     │   ├── base/
     │   └── layout/
     └── assets/
-        └── images/
+        ├── images/
+        └── fonts/
 ```
 
 ## Ruolo dei file principali
@@ -114,7 +114,9 @@ File statici serviti così come sono, senza alcuna elaborazione da parte di Astr
 
 - `favicon.svg` — icona del sito.
 - `robots.txt` — direttive per i crawler, con riferimento alla sitemap generata al build.
-- `fonts/`, `icons/` — risorse statiche non processate.
+- `icons/` — risorse statiche non processate.
+
+I font self-hosted vivono invece in `src/assets/fonts/`, non in `public/`: essendo referenziati da `url()` in `typography.css`, devono passare dalla pipeline di Vite per ricevere automaticamente hash e base path corretti.
 
 ## `src/config/`
 

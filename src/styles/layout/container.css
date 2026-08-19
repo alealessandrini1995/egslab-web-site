@@ -71,7 +71,7 @@
    esclusione — resta visibile solo la differenza, cioè la cornice, spessa
    quanto il padding. */
 .stage--light {
-  background: #ffffff;
+  background: var(--bg);
   color: var(--ink);
 }
 .stage--light::after {

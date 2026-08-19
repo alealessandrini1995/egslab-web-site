@@ -43,7 +43,7 @@ const { servizio } = Astro.props;
     display: flex;
     flex-direction: column;
     width: clamp(300px, 27vw, 380px);
-    background: #fff;
+    background: var(--bg);
     border: 1px solid var(--hairline);
     border-radius: var(--r-lg);
     overflow: hidden;
@@ -94,7 +94,7 @@ const { servizio } = Astro.props;
     padding: 7px 14px;
     border-radius: var(--r-pill);
     background: var(--green);
-    color: #fff;
+    color: var(--on-dark);
     font-family: var(--font-display);
     font-weight: 700;
     font-size: 13px;
@@ -157,7 +157,7 @@ const { servizio } = Astro.props;
     pointer-events: none;
   }
   .scheda .scheda__piu svg {
-    stroke: #fff;
+    stroke: var(--on-dark);
   }
   .scheda:hover .scheda__piu {
     background: var(--green-deep);

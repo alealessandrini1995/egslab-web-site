@@ -58,7 +58,7 @@ import { faq } from '../data/faq';
     background: linear-gradient(150deg, #416935, #22381b);
   }
   .faq__item:has(.faq__q[aria-expanded='true']) .faq__q {
-    color: #fff;
+    color: var(--on-dark);
   }
   .faq__item:has(.faq__q[aria-expanded='true']) .faq__a-inner {
     color: rgba(255, 255, 255, 0.82);
@@ -88,7 +88,7 @@ import { faq } from '../data/faq';
     height: 34px;
   }
   .faq__q :global(.plus) svg {
-    stroke: #fff;
+    stroke: var(--on-dark);
   }
   .faq__q[aria-expanded='true'] :global(.plus) {
     background: var(--sage);

@@ -1,64 +1,63 @@
 /* Font autoospitati: nessuna richiesta a un dominio esterno, nessun IP
    condiviso con terzi, il testo resta leggibile anche se la rete è lenta
    (font-display:swap ripiega sul font di sistema finché non è pronto).
-   I percorsi sono assoluti su un file public/: Vite non applica il `base`
-   di astro.config.mjs dentro url() in un .css semplice, quindi il prefisso
-   "/egslab-web-site" qui sotto va tenuto allineato a mano a quel valore. */
+   I file vivono in src/assets/fonts/: Vite risolve questi url() come
+   asset, applicando hash e base path automaticamente in build. */
 @font-face {
   font-family: 'League Spartan';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('/egslab-web-site/fonts/league-spartan-400.woff2') format('woff2');
+  src: url('../../assets/fonts/league-spartan-400.woff2') format('woff2');
 }
 @font-face {
   font-family: 'League Spartan';
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url('/egslab-web-site/fonts/league-spartan-500.woff2') format('woff2');
+  src: url('../../assets/fonts/league-spartan-500.woff2') format('woff2');
 }
 @font-face {
   font-family: 'League Spartan';
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url('/egslab-web-site/fonts/league-spartan-600.woff2') format('woff2');
+  src: url('../../assets/fonts/league-spartan-600.woff2') format('woff2');
 }
 @font-face {
   font-family: 'League Spartan';
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url('/egslab-web-site/fonts/league-spartan-700.woff2') format('woff2');
+  src: url('../../assets/fonts/league-spartan-700.woff2') format('woff2');
 }
 @font-face {
   font-family: 'League Spartan';
   font-style: normal;
   font-weight: 800;
   font-display: swap;
-  src: url('/egslab-web-site/fonts/league-spartan-800.woff2') format('woff2');
+  src: url('../../assets/fonts/league-spartan-800.woff2') format('woff2');
 }
 @font-face {
   font-family: 'Inter';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('/egslab-web-site/fonts/inter-400.woff2') format('woff2');
+  src: url('../../assets/fonts/inter-400.woff2') format('woff2');
 }
 @font-face {
   font-family: 'Inter';
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url('/egslab-web-site/fonts/inter-500.woff2') format('woff2');
+  src: url('../../assets/fonts/inter-500.woff2') format('woff2');
 }
 @font-face {
   font-family: 'Inter';
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url('/egslab-web-site/fonts/inter-600.woff2') format('woff2');
+  src: url('../../assets/fonts/inter-600.woff2') format('woff2');
 }
 
 h1,
@@ -176,7 +175,7 @@ h4 {
    regola valida per ogni CTA primaria su fondo chiaro, non solo qui. */
 .btn--green {
   background: var(--green);
-  color: #fff;
+  color: var(--on-dark);
   box-shadow: 0 8px 24px -10px rgba(44, 72, 35, 0.7);
 }
 .btn--green:hover {
@@ -190,16 +189,16 @@ h4 {
 }
 .btn--ghost:hover {
   background: var(--ink);
-  color: #fff;
+  color: var(--on-dark);
 }
 .stage--night .btn--ghost,
 .stage--green .btn--ghost {
   border-color: rgba(255, 255, 255, 0.42);
-  color: #fff;
+  color: var(--on-dark);
 }
 .stage--night .btn--ghost:hover,
 .stage--green .btn--ghost:hover {
-  background: #fff;
+  background: var(--bg);
   color: var(--ink);
 }
 .btn--sm {
@@ -279,7 +278,7 @@ h4 {
   width: 14px;
   height: 14px;
   fill: none;
-  stroke: #fff;
+  stroke: var(--on-dark);
   stroke-width: 2.5;
   stroke-linecap: round;
 }

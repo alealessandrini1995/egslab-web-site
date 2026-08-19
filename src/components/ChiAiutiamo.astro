@@ -79,7 +79,7 @@ import { tessere } from '../data/chi-aiutiamo';
     display: flex;
     flex-direction: column;
     padding: var(--s-4);
-    background: #fff;
+    background: var(--bg);
     border-radius: var(--r-md);
     /* il filo grigio a riposo è un'ombra interna, non un bordo: così al
        passaggio del mouse la cornice colorata prende il suo posto esatto
@@ -152,7 +152,7 @@ import { tessere } from '../data/chi-aiutiamo';
     padding: 14px 16px;
     border-radius: var(--r-sm);
     background: var(--green);
-    color: #fff;
+    color: var(--on-dark);
     font-size: 16px;
     line-height: 1.5;
   }
@@ -162,12 +162,12 @@ import { tessere } from '../data/chi-aiutiamo';
     background: var(--sage);
   }
   .card__toggle svg {
-    stroke: #fff;
+    stroke: var(--on-dark);
   }
   .card__toggle[aria-expanded='true'] {
     background: var(--green);
   }
   .card__toggle[aria-expanded='true'] svg {
-    stroke: #fff;
+    stroke: var(--on-dark);
   }
 </style>

@@ -120,10 +120,10 @@ import { fasi } from '../data/processo';
     transition: color var(--t-fast);
   }
   .pcs__t:hover {
-    color: #fff;
+    color: var(--on-dark);
   }
   .pcs__t[aria-selected='true'] {
-    color: #fff;
+    color: var(--on-dark);
   }
 
   /* Il filo: due strati sovrapposti fra un punto e il successivo. ::after
@@ -170,7 +170,7 @@ import { fasi } from '../data/processo';
     font-size: 13px;
     font-weight: 600;
     letter-spacing: 0.06em;
-    color: #fff;
+    color: var(--on-dark);
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     transition:
@@ -226,7 +226,7 @@ import { fasi } from '../data/processo';
     font-size: 26px;
     letter-spacing: -0.02em;
     line-height: 1.15;
-    color: #fff;
+    color: var(--on-dark);
     margin-bottom: var(--s-3);
   }
   .pcs__p p + p:not(.pcs__need) {

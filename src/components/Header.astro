@@ -99,7 +99,7 @@ function isActive(href: string) {
   }
   :global(body[data-sopra-hero]) :global(.socials a:hover),
   :global(body[data-sopra-hero]) :global(.socials a:focus-visible) {
-    color: #fff;
+    color: var(--on-dark);
   }
 
   .brand__badge {
@@ -113,7 +113,7 @@ function isActive(href: string) {
   }
   .brand__logo {
     display: block;
-    fill: #fff;
+    fill: var(--on-dark);
   }
 
   .nav-toggle {
@@ -129,7 +129,7 @@ function isActive(href: string) {
     display: block;
     width: 30px;
     height: 2.5px;
-    background: #fff;
+    background: var(--bg);
     border-radius: 2px;
     transition:
       transform var(--t-mid) var(--ease),
@@ -179,7 +179,7 @@ function isActive(href: string) {
     padding: 14px var(--s-3);
     border-radius: var(--r-sm);
     text-decoration: none;
-    color: #fff;
+    color: var(--on-dark);
     font-family: var(--font-display);
     font-weight: 700;
     font-size: 22px;

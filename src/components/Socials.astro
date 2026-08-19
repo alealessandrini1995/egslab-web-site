@@ -47,7 +47,7 @@ const { class: className } = Astro.props;
     display: grid;
     place-items: center;
     border: 1px solid rgba(255, 255, 255, 0.32);
-    color: #fff;
+    color: var(--on-dark);
     transition:
       background var(--t-fast),
       color var(--t-fast),
@@ -78,7 +78,7 @@ const { class: className } = Astro.props;
   }
   .socials a:hover,
   .socials a:focus-visible {
-    color: #fff;
+    color: var(--on-dark);
     transform: translateY(-2px);
   }
   /* Instagram e WhatsApp sono segni "vuoti", Facebook e LinkedIn pieni: a

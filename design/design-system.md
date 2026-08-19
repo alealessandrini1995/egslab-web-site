@@ -49,7 +49,7 @@ Fonte di verità: `src/styles/base/tokens.css`. Questo file descrive i token gi�
 | `--font-display` | 'League Spartan', 'Inter', 'Helvetica Neue', Arial, system-ui, sans-serif |
 | `--font-body` | 'Inter', 'Helvetica Neue', Arial, system-ui, sans-serif |
 
-Font autoospitati in `public/fonts/` (League Spartan 400–800, Inter 400–600), dichiarati in `src/styles/base/typography.css` con `font-display: swap`.
+Font autoospitati in `src/assets/fonts/` (League Spartan 400–800, Inter 400–600), dichiarati in `src/styles/base/typography.css` con `font-display: swap`.
 
 **Scala (fluida, `clamp()`)**
 | Token | Valore | Uso |

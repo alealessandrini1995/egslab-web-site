@@ -27,7 +27,7 @@ Non esiste una suite di test: la verifica di consegna è `npm run build`.
 - Mai valori hardcoded per colori, spaziature o breakpoint: usare sempre i token definiti in `src/styles/base/tokens.css`.
 - Nome del sito, voci di navigazione e contatti si modificano solo in `src/config/site.ts`, mai duplicati nelle pagine o nei componenti.
 - Ogni pagina deve passare `title` a `BaseLayout`; TypeScript strict lo impone al build.
-- Le immagini vanno in `src/assets/images/` (ottimizzate da Astro), non in `public/`. `public/` è riservata a file da servire as-is (favicon, robots.txt, font).
+- Le immagini vanno in `src/assets/images/` (ottimizzate da Astro), non in `public/`. I font self-hosted vanno in `src/assets/fonts/`, per lo stesso motivo: referenziati via `url()` nel CSS, devono passare dalla pipeline di Vite per ricevere hash e base path corretti. `public/` è riservata a file da servire as-is (favicon, robots.txt).
 
 ## Convenzioni di codice
 

@@ -209,7 +209,7 @@ import { Image } from 'astro:assets';
     font-size: 22px;
     line-height: 1;
     color: var(--ink);
-    background: #fff;
+    background: var(--bg);
     border: 1px solid var(--hairline);
     box-shadow: var(--shadow-sm);
     transition:
@@ -246,18 +246,18 @@ import { Image } from 'astro:assets';
     border-color: transparent;
   }
   .banda__moto[aria-pressed='true'] svg {
-    stroke: #fff;
-    fill: #fff;
+    stroke: var(--on-dark);
+    fill: var(--on-dark);
   }
   .banda__moto[aria-pressed='true'] .banda__play {
-    fill: #fff;
+    fill: var(--on-dark);
   }
 
   .cli {
     flex: 0 0 clamp(200px, 46vw, 260px);
     overflow: hidden;
     border-radius: var(--r-md);
-    background: #fff;
+    background: var(--bg);
     border: 1px solid var(--hairline);
     box-shadow: var(--shadow-sm);
   }
