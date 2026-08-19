@@ -47,6 +47,14 @@ npm run preview     # anteprima locale della build di produzione
 └── src/
     ├── config/
     │   └── site.ts
+    ├── data/
+    │   └── *.ts
+    ├── lib/
+    │   └── blog.ts
+    ├── content.config.ts
+    ├── content/
+    │   └── blog/
+    │       └── *.md
     ├── layouts/
     │   └── BaseLayout.astro
     ├── components/
@@ -58,6 +66,9 @@ npm run preview     # anteprima locale della build di produzione
     │   ├── servizi.astro
     │   ├── chi-siamo.astro
     │   ├── contatti.astro
+    │   ├── blog/
+    │   │   ├── index.astro
+    │   │   └── [slug].astro
     │   └── 404.astro
     ├── styles/
     │   ├── global.css
@@ -108,6 +119,18 @@ File statici serviti così come sono, senza alcuna elaborazione da parte di Astr
 ## `src/config/`
 
 - `site.ts` — punto di verità unico per nome del sito, URL, lingua, voci di navigazione e contatti. Header, Footer e SEO leggono da qui.
+
+## `src/data/`
+
+Elenchi tipizzati che alimentano le sezioni della Home (servizi, clienti, recensioni, FAQ, ecc.): un file per elenco, letto dai componenti corrispondenti. `servizi.ts` è il punto di verità dei 15 servizi, riusato da rail, modulo di contatto e piè di pagina.
+
+## `src/content.config.ts` e `src/content/`
+
+Collection `blog` (Content Layer API): schema in `content.config.ts`, un file `.md` per articolo in `content/blog/`. Il corpo Markdown è la prosa; il frontmatter guida titolo, categoria, data, correlati e il rimando alla pagina servizio.
+
+## `src/lib/`
+
+Funzioni pure di supporto alle pagine, non legate a un componente specifico (es. ordinamento e correlati degli articoli in `blog.ts`).
 
 ## `src/layouts/`
 

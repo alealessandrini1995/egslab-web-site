@@ -1,0 +1,109 @@
+---
+import { faq } from '../data/faq';
+---
+
+<section class="section" aria-labelledby="titolo-faq">
+  <div class="wrap wrap--wide">
+    <div class="head head--center reveal">
+      <p class="eyebrow">Domande frequenti</p>
+      <h2 class="h2" id="titolo-faq">Le domande che ci fanno <span class="grad">più spesso</span></h2>
+    </div>
+    <div class="faq">
+      {
+        faq.map((item, i) => (
+          <div class="faq__item">
+            <h3 class="sr-only-title">
+              <button class="faq__q" type="button" data-toggle={`faq-${i + 1}`} aria-expanded="false" aria-controls={`faq-${i + 1}`}>
+                <span>{item.domanda}</span>
+                <span class="plus" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 5v14M5 12h14" />
+                  </svg>
+                </span>
+              </button>
+            </h3>
+            <div class="faq__a" id={`faq-${i + 1}`}>
+              <div class="faq__a-inner">
+                <p>{item.risposta}</p>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .sr-only-title {
+    font: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+  }
+
+  .faq {
+    margin-top: var(--s-6);
+  }
+  /* Il colore dice dove sei: la domanda chiusa sta su fondo tenue, quella
+     aperta va sul verde scuro con testo bianco. :has invece di una classe
+     dal JS: lo stato sta già su aria-expanded. */
+  .faq__item {
+    background: var(--sage-tint);
+    border: 1px solid transparent;
+    border-radius: var(--r-md);
+    overflow: hidden;
+    transition: background var(--t-mid) var(--ease);
+  }
+  .faq__item:has(.faq__q[aria-expanded='true']) {
+    background: linear-gradient(150deg, #416935, #22381b);
+  }
+  .faq__item:has(.faq__q[aria-expanded='true']) .faq__q {
+    color: #fff;
+  }
+  .faq__item:has(.faq__q[aria-expanded='true']) .faq__a-inner {
+    color: rgba(255, 255, 255, 0.82);
+  }
+  .faq__item + .faq__item {
+    margin-top: var(--s-1);
+  }
+  .faq__q {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-3) var(--s-4);
+    background: none;
+    border: 0;
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(18px, 2vw, 22px);
+    letter-spacing: -0.02em;
+  }
+  .faq__q :global(.plus) {
+    margin-left: auto;
+    background: var(--green);
+    width: 34px;
+    height: 34px;
+  }
+  .faq__q :global(.plus) svg {
+    stroke: #fff;
+  }
+  .faq__q[aria-expanded='true'] :global(.plus) {
+    background: var(--sage);
+  }
+  .faq__q[aria-expanded='true'] :global(.plus) svg {
+    stroke: var(--ink);
+  }
+  .faq__a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--t-slow) var(--ease);
+  }
+  .faq__a-inner {
+    padding: 0 var(--s-4) var(--s-4);
+    max-width: 66ch;
+    color: var(--ink-soft);
+  }
+</style>

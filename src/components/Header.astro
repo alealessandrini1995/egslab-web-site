@@ -1,63 +1,291 @@
 ---
 import { site } from '../config/site';
+import Socials from './Socials.astro';
 
 const currentPath = Astro.url.pathname;
-
 function isActive(href: string) {
-  if (href === '/') return currentPath === '/';
-  return currentPath.startsWith(href);
+  return currentPath === href || currentPath.startsWith(href);
 }
 ---
 
 <header class="site-header">
-  <div class="container site-header__inner">
-    <a class="site-header__brand" href="/">{site.name}</a>
-    <nav class="site-header__nav" aria-label="Navigazione principale">
-      <ul>
-        {
-          site.nav.map((item) => (
-            <li>
-              <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
-                {item.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
+  <div class="site-header__bar">
+    <a class="brand" href="/" aria-label="egslab — torna alla home">
+      <span class="brand__badge">
+        <svg class="brand__logo" viewBox="-120 -60 4439 1637" width="60" height="22" role="img" aria-label="egslab">
+          <use href="#logo-egslab"></use>
+        </svg>
+      </span>
+    </a>
+
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu-principale">
+      <i></i><i></i><i></i>
+      <span class="sr-only">Apri il menu</span>
+    </button>
+
+    <Socials />
   </div>
+
+  <nav class="menu-panel" id="menu-principale" aria-label="Navigazione principale">
+    {
+      site.nav.map((item) => (
+        <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+          {item.label}
+        </a>
+      ))
+    }
+    <a class="btn btn--sage btn--block" href={site.contact.whatsapp} target="_blank" rel="noopener">
+      Scrivici su WhatsApp
+    </a>
+  </nav>
 </header>
 
 <style>
+  /* Intestazione che si ritira scorrendo: lo stato lo mette lo script su
+     <body data-testa="giu|su">. Transizione solo su transform, gratis per
+     il browser rispetto a spostare la posizione. */
   .site-header {
-    border-bottom: 1px solid var(--color-border);
+    position: sticky;
+    top: var(--header-gap);
+    z-index: 70;
+    margin: var(--header-gap) auto 0;
+    max-width: 1360px;
+    padding-inline: var(--s-2);
+    transition: transform var(--t-mid) var(--ease);
+    will-change: transform;
   }
-
-  .site-header__inner {
+  :global(body[data-testa='giu']) .site-header {
+    transform: translateY(calc((100% + var(--header-gap) * 2) * -1));
+  }
+  :global(body[data-menu='open']) .site-header {
+    transform: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .site-header {
+      transition: none;
+    }
+  }
+  .site-header__bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: var(--space-3);
-    padding-block: var(--space-3);
+    gap: var(--s-3);
+    height: var(--header-h);
+    padding: 0 14px;
+    border-radius: var(--r-pill);
+    background: rgba(14, 16, 14, 0.55);
+    border: 1px solid var(--glass-brd-d);
+    backdrop-filter: var(--blur);
+    -webkit-backdrop-filter: var(--blur);
+  }
+  /* Sopra una hero bianca il vetro scuro diventerebbe grigio: finché la
+     testata è ancora sopra la hero le si mette il vetro chiaro. Lo stato
+     è scritto dall'IntersectionObserver dello script qui sotto — non è lo
+     stesso attributo di data-testa, che dice "mi sto ritirando" e cambia
+     al primo pixel scrollato anche restando dentro la hero. */
+  :global(body[data-sopra-hero]) .site-header__bar {
+    background: var(--glass-light);
+    border-color: rgba(19, 22, 18, 0.1);
+    box-shadow: var(--shadow-sm);
+  }
+  :global(body[data-sopra-hero]) .nav-toggle i {
+    background: var(--ink);
+  }
+  :global(body[data-sopra-hero]) :global(.socials a) {
+    border-color: rgba(19, 22, 18, 0.18);
+    color: var(--ink);
+  }
+  :global(body[data-sopra-hero]) :global(.socials a:hover),
+  :global(body[data-sopra-hero]) :global(.socials a:focus-visible) {
+    color: #fff;
   }
 
-  .site-header__brand {
-    font-weight: 600;
-    font-size: var(--font-size-lg);
+  .brand__badge {
+    display: grid;
+    place-items: center;
+    height: 46px;
+    padding-inline: 18px;
+    background: var(--sage);
+    border-radius: var(--r-pill);
+    flex: 0 0 auto;
+  }
+  .brand__logo {
+    display: block;
+    fill: #fff;
   }
 
-  .site-header__nav ul {
-    display: flex;
-    gap: var(--space-4);
+  .nav-toggle {
+    display: grid;
+    gap: 6px;
+    padding: 14px;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    border-radius: var(--r-pill);
+  }
+  .nav-toggle i {
+    display: block;
+    width: 30px;
+    height: 2.5px;
+    background: #fff;
+    border-radius: 2px;
+    transition:
+      transform var(--t-mid) var(--ease),
+      opacity var(--t-fast);
+  }
+  :global([data-menu='open']) .nav-toggle i:nth-child(1) {
+    transform: translateY(8.5px) rotate(45deg);
+  }
+  :global([data-menu='open']) .nav-toggle i:nth-child(2) {
+    opacity: 0;
+  }
+  :global([data-menu='open']) .nav-toggle i:nth-child(3) {
+    transform: translateY(-8.5px) rotate(-45deg);
   }
 
-  .site-header__nav a {
-    color: var(--color-muted);
+  .menu-panel {
+    position: fixed;
+    left: 14px;
+    right: 14px;
+    top: calc(var(--header-h) + 30px);
+    z-index: 65;
+    padding: var(--s-3);
+    border-radius: var(--r-lg);
+    background: rgba(14, 16, 14, 0.92);
+    border: 1px solid var(--glass-brd-d);
+    backdrop-filter: var(--blur-lg);
+    -webkit-backdrop-filter: var(--blur-lg);
+    box-shadow: var(--shadow-dark);
+    display: grid;
+    gap: 4px;
+    max-width: 1332px;
+    margin-inline: auto;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-12px);
+    transition:
+      opacity var(--t-mid) ease,
+      transform var(--t-mid) var(--ease),
+      visibility var(--t-mid);
   }
-
-  .site-header__nav a:hover,
-  .site-header__nav a[aria-current='page'] {
-    color: var(--color-text);
+  :global([data-menu='open']) .menu-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+  .menu-panel a {
+    padding: 14px var(--s-3);
+    border-radius: var(--r-sm);
+    text-decoration: none;
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+  }
+  .menu-panel a:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .menu-panel .btn {
+    margin-top: var(--s-2);
+  }
+  :global(body[data-menu='open'])::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    background: rgba(8, 10, 8, 0.5);
+    backdrop-filter: blur(4px);
   }
 </style>
+
+<script>
+  (function menu() {
+    const bottone = document.querySelector<HTMLButtonElement>('.nav-toggle');
+    const pannello = document.getElementById('menu-principale');
+    if (!bottone || !pannello) return;
+
+    const etichetta = bottone.querySelector('.sr-only');
+
+    function apri(aperto: boolean) {
+      document.body.dataset.menu = aperto ? 'open' : 'closed';
+      bottone!.setAttribute('aria-expanded', String(aperto));
+      if (etichetta) etichetta.textContent = aperto ? 'Chiudi il menu' : 'Apri il menu';
+    }
+
+    bottone.addEventListener('click', (e) => {
+      e.stopPropagation();
+      apri(document.body.dataset.menu !== 'open');
+    });
+
+    pannello.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) apri(false);
+    });
+
+    document.addEventListener('click', (e) => {
+      if (document.body.dataset.menu !== 'open') return;
+      const target = e.target as HTMLElement;
+      if (target.closest('.menu-panel') || target.closest('.nav-toggle')) return;
+      apri(false);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && document.body.dataset.menu === 'open') {
+        apri(false);
+        bottone!.focus();
+      }
+    });
+  })();
+
+  (function testa() {
+    const testa = document.querySelector('.site-header');
+    if (!testa) return;
+
+    const SOGLIA = 6;
+    const LIBERA = 120;
+    let ultimo = window.scrollY;
+    let inCoda = false;
+
+    function valuta() {
+      inCoda = false;
+      const y = window.scrollY;
+      const delta = y - ultimo;
+      if (Math.abs(delta) < SOGLIA) return;
+      if (document.body.dataset.menu !== 'open') {
+        document.body.dataset.testa = delta > 0 && y > LIBERA ? 'giu' : 'su';
+      }
+      ultimo = y;
+    }
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (inCoda) return;
+        inCoda = true;
+        requestAnimationFrame(valuta);
+      },
+      { passive: true }
+    );
+
+    window.addEventListener('hashchange', () => {
+      document.body.dataset.testa = 'su';
+      ultimo = window.scrollY;
+    });
+
+    const hero = document.querySelector('.hero');
+    if (hero && 'IntersectionObserver' in window) {
+      const css = getComputedStyle(document.documentElement);
+      const altezza = parseInt(css.getPropertyValue('--header-h'), 10) || 74;
+      const stacco = parseInt(css.getPropertyValue('--header-gap'), 10) || 14;
+      const bordo = altezza + stacco * 2;
+
+      new IntersectionObserver(
+        ([voce]) => {
+          if (voce.isIntersecting) document.body.dataset.sopraHero = '';
+          else delete document.body.dataset.sopraHero;
+        },
+        { rootMargin: `${-bordo}px 0px 0px 0px`, threshold: 0 }
+      ).observe(hero);
+    }
+  })();
+</script>

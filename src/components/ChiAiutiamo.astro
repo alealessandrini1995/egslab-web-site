@@ -1,0 +1,173 @@
+---
+import { tessere } from '../data/chi-aiutiamo';
+---
+
+<section class="section" aria-labelledby="titolo-chi-aiutiamo">
+  <div class="wrap wrap--wide">
+    <div class="stage stage--light">
+      <div class="wrap">
+        <div class="head head--center head--largo reveal">
+          <p class="eyebrow">Chi aiutiamo</p>
+          <h2 class="h2" id="titolo-chi-aiutiamo">Lavoriamo con chi <span class="grad">sta costruendo qualcosa</span></h2>
+        </div>
+
+        <div class="group reveal" style="margin-top:var(--s-6)">
+          <p class="group__label group__label--center">Quattro situazioni tipiche</p>
+
+          <div class="tiles">
+            {
+              tessere.map((t, i) => (
+                <article class="tess">
+                  <svg class="tess__ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <use href={`#${t.icona}`} />
+                  </svg>
+                  <h3 class="h3 card__title">{t.titolo}</h3>
+                  <p class="card__frase">{t.frase}</p>
+                  <div class="card__more" id={`card-${i + 1}`}>
+                    <p>{t.dettaglio}</p>
+                  </div>
+                  <button
+                    class="plus card__toggle"
+                    type="button"
+                    data-toggle={`card-${i + 1}`}
+                    aria-expanded="false"
+                    aria-controls={`card-${i + 1}`}
+                  >
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                    <span class="sr-only">Leggi tutto: {t.titolo.toLowerCase()}</span>
+                  </button>
+                </article>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .group + .group {
+    margin-top: var(--s-5);
+  }
+  .group__label {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    padding: 0 0 var(--s-2) var(--s-2);
+  }
+  .group__label--center {
+    text-align: center;
+    padding-left: 0;
+  }
+  .tiles {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-2);
+  }
+  @media (min-width: 700px) {
+    .tiles {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .tess {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: var(--s-4);
+    background: #fff;
+    border-radius: var(--r-md);
+    /* il filo grigio a riposo è un'ombra interna, non un bordo: così al
+       passaggio del mouse la cornice colorata prende il suo posto esatto
+       senza doppia linea e senza cambiare dimensione */
+    box-shadow: var(--shadow-sm), inset 0 0 0 1px var(--hairline);
+    transition:
+      transform var(--t-mid) ease,
+      box-shadow var(--t-mid) ease;
+  }
+  .tess:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+  }
+  .tess__ico {
+    width: 34px;
+    height: 34px;
+    color: var(--green);
+    margin-bottom: 4px;
+  }
+  .tess::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    padding: 2px;
+    background: var(--grad);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity var(--t-mid);
+  }
+  .tess:hover::before {
+    opacity: 1;
+  }
+  @supports not ((mask-composite: exclude) or (-webkit-mask-composite: xor)) {
+    .tess::before {
+      display: none;
+    }
+    .tess:hover {
+      box-shadow: var(--shadow-md), inset 0 0 0 2px var(--g2);
+    }
+  }
+
+  .card__title {
+    margin-top: 6px;
+  }
+  /* margin-bottom:auto assorbe lo spazio libero: a pannello chiuso spinge
+     il comando in fondo alla card, a pannello aperto si annulla da sola */
+  .card__frase {
+    margin-top: 10px;
+    margin-bottom: auto;
+    color: var(--ink-soft);
+    font-size: 17px;
+    line-height: 1.45;
+  }
+  .card__more {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--t-slow) var(--ease);
+  }
+  .card__more p {
+    margin-top: var(--s-2);
+    padding: 14px 16px;
+    border-radius: var(--r-sm);
+    background: var(--green);
+    color: #fff;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  .card__toggle {
+    margin-top: 18px;
+    align-self: flex-start;
+    background: var(--sage);
+  }
+  .card__toggle svg {
+    stroke: #fff;
+  }
+  .card__toggle[aria-expanded='true'] {
+    background: var(--green);
+  }
+  .card__toggle[aria-expanded='true'] svg {
+    stroke: #fff;
+  }
+</style>

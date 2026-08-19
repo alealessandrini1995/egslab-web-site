@@ -1,0 +1,113 @@
+---
+import { ragioni } from '../data/ragioni';
+---
+
+<section class="section" aria-labelledby="titolo-perche">
+  <div class="wrap wrap--wide">
+    <div class="stage stage--night">
+      <div class="wrap">
+        <div class="perche reveal">
+          <div class="perche__testo">
+            <p class="eyebrow">Perché egslab</p>
+            <h2 class="h2" id="titolo-perche">Una rete di professionisti, <span class="grad">un solo referente</span></h2>
+            <p class="lead">
+              Non siamo un'agenzia con un reparto per ogni cosa e nessuno che risponde davvero. Siamo una rete di
+              professionisti, ognuno con la propria specializzazione, coordinati da chi segue il tuo progetto
+              dall'inizio alla fine.
+            </p>
+            <p class="section-foot"><a class="btn btn--sage" href="/chi-siamo/">Scopri chi siamo</a></p>
+          </div>
+
+          <div class="tiles perche__punti">
+            {
+              ragioni.map((r, i) => (
+                <div class="glass ragione reveal" data-delay={i > 0 ? String(i) : undefined}>
+                  <h3 class="h4">
+                    <svg class="ragione__ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <use href="#ico-spunta" />
+                    </svg>
+                    {r.titolo}
+                  </h3>
+                  <p class="lead">{r.testo}</p>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .glass {
+    background: var(--glass-dark);
+    border: 1px solid var(--glass-brd-d);
+    border-radius: var(--r-xl);
+    backdrop-filter: var(--blur);
+    -webkit-backdrop-filter: var(--blur);
+    box-shadow: var(--shadow-dark);
+  }
+
+  .perche {
+    display: grid;
+    gap: var(--s-5);
+  }
+  @media (min-width: 980px) {
+    /* colonne non pari: il testo ha bisogno di meno larghezza delle
+       quattro tessere, che con poco spazio vanno a capo e alzano la
+       sezione */
+    .perche {
+      grid-template-columns: 0.92fr 1.08fr;
+      gap: var(--s-5);
+      align-items: center;
+    }
+  }
+  .perche__testo {
+    text-align: center;
+  }
+  @media (min-width: 980px) {
+    .perche__testo {
+      text-align: left;
+    }
+  }
+  .perche__testo .lead {
+    margin-top: var(--s-3);
+  }
+  .perche__testo .section-foot {
+    margin-top: var(--s-4);
+  }
+  @media (min-width: 980px) {
+    .perche__testo .section-foot {
+      text-align: left;
+    }
+  }
+  .perche__punti {
+    align-content: center;
+  }
+
+  .ragione {
+    padding: var(--s-4);
+    border-radius: var(--r-md);
+  }
+  .ragione .lead {
+    font-size: 16px;
+  }
+  .ragione .h4 {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  /* Il quadratino sage con la spunta scura: lo stesso segno su tutte e
+     quattro le ragioni — è un punto elenco, non un'icona che descrive la
+     singola ragione. In linea col titolo, non su una riga propria: così
+     non costa altezza alla sezione. */
+  .ragione__ico {
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    margin-top: 1px;
+    color: var(--sage);
+    stroke: var(--ink);
+  }
+</style>

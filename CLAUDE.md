@@ -1,8 +1,25 @@
 # CLAUDE.md
 
+Questo file fornisce indicazioni a Claude Code (claude.ai/code) per lavorare sul codice di questo repository.
+
 ## Contesto del progetto
 
 Template Astro per siti statici professionali, con output 100% statico (`output: 'static'`). Nessun backend, nessun endpoint server-side: eventuali form vanno collegati a servizi esterni (es. Formspree, Netlify Forms), mai a un adapter server.
+
+## Comandi
+
+```bash
+npm install       # installa le dipendenze
+npm run dev        # dev server con hot reload su http://localhost:4321
+npm run build       # build statico in dist/, deve completare senza errori (TypeScript strict)
+npm run preview      # anteprima locale della build di produzione
+```
+
+Non esiste una suite di test: la verifica di consegna è `npm run build`.
+
+## Architettura
+
+`BaseLayout.astro` è l'unico punto che assembla una pagina: importa `src/styles/global.css`, monta `SEO`, `Header` e `Footer`, e riceve `title` (obbligatorio) più `description`/`image` opzionali come props. `SEO.astro` legge i default (`description`, `name`, `lang`) da `site.ts` quando le props non sono passate, e costruisce `canonicalURL` da `Astro.site` (definito in `astro.config.mjs`) + `Astro.url.pathname` — per questo ogni pagina in `src/pages/` deve passare solo `title` (e opzionalmente `description`/`image`) a `BaseLayout`, senza ripetere logica SEO. `Header` e `Footer` leggono `nav` e `contact` da `site.ts`, quindi non vanno mai hardcodati nei singoli componenti.
 
 ## Regole tecniche
 
@@ -21,6 +38,8 @@ Template Astro per siti statici professionali, con output 100% statico (`output:
 ## Struttura dei file
 
 Vedi l'albero completo in [README.md](README.md). In sintesi: `src/pages/` per le route, `src/components/` per gli elementi riutilizzabili, `src/layouts/` per gli scheletri di pagina, `src/config/site.ts` per i dati centralizzati, `src/styles/` per il design system globale.
+
+Gli elenchi che alimentano le sezioni della Home (servizi, clienti, FAQ, recensioni…) vivono in `src/data/`, un file per elenco: non vanno duplicati come array inline nei componenti. Il blog è una content collection (`src/content.config.ts` + `src/content/blog/*.md`), schema con Content Layer API (`glob` da `astro/loaders`).
 
 ## Workflow
 

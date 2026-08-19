@@ -1,0 +1,290 @@
+---
+import { fasi } from '../data/processo';
+---
+
+<section class="section" aria-labelledby="titolo-processo">
+  <div class="wrap wrap--wide">
+    <div class="stage stage--green">
+      <div class="wrap">
+        <div class="head head--center reveal">
+          <p class="eyebrow">Come lavoriamo</p>
+          <h2 class="h2" id="titolo-processo">Come lavoriamo, passo per passo</h2>
+          <p class="lead">Nessuna sorpresa lungo il percorso. Sai sempre a che punto siamo e cosa serve da te.</p>
+        </div>
+
+        <div class="pcs" data-processo>
+          <div class="pcs__nastro" role="tablist" aria-label="Le sei fasi del percorso">
+            {
+              fasi.map((f, i) => (
+                <button
+                  class="pcs__t"
+                  type="button"
+                  role="tab"
+                  id={`fase-${i + 1}-scheda`}
+                  aria-selected={i === 0 ? 'true' : 'false'}
+                  aria-controls={`fase-${i + 1}`}
+                  tabindex={i === 0 ? 0 : -1}
+                >
+                  <span class="pcs__n">{f.numero}</span>
+                  <span class="pcs__lab">{f.etichetta}</span>
+                </button>
+              ))
+            }
+          </div>
+
+          <div class="pcs__box">
+            {
+              fasi.map((f, i) => (
+                <div class="pcs__p" id={`fase-${i + 1}`} role="tabpanel" aria-labelledby={`fase-${i + 1}-scheda`} tabindex={0} hidden={i !== 0}>
+                  <h3 class="pcs__tit">{f.titolo}</h3>
+                  <p>{f.testo}</p>
+                  {f.esempio && <p class="pcs__esempio">{f.esempio}</p>}
+                  <p class="pcs__need">Cosa serve da te: {f.serve}</p>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function percorso() {
+    const pcs = document.querySelector('[data-processo]');
+    if (!pcs) return;
+
+    const schede = Array.from(pcs.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+    const pannelli = Array.from(pcs.querySelectorAll<HTMLElement>('[role="tabpanel"]'));
+    if (!schede.length || schede.length !== pannelli.length) return;
+
+    function scegli(indice: number, spostaIlFuoco: boolean) {
+      schede.forEach((s, i) => {
+        const scelta = i === indice;
+        s.setAttribute('aria-selected', String(scelta));
+        s.tabIndex = scelta ? 0 : -1;
+        if (i < indice) s.setAttribute('data-fatto', '');
+        else s.removeAttribute('data-fatto');
+        pannelli[i].hidden = !scelta;
+      });
+      if (spostaIlFuoco) schede[indice].focus();
+    }
+
+    schede.forEach((s, i) => {
+      s.addEventListener('click', () => scegli(i, false));
+
+      s.addEventListener('keydown', (e) => {
+        let salto = 0;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') salto = 1;
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') salto = -1;
+        else if (e.key === 'Home') salto = -i;
+        else if (e.key === 'End') salto = schede.length - 1 - i;
+        else return;
+
+        e.preventDefault();
+        scegli((i + salto + schede.length) % schede.length, true);
+      });
+    });
+
+    const partenza = schede.findIndex((s) => s.getAttribute('aria-selected') === 'true');
+    scegli(partenza === -1 ? 0 : partenza, false);
+  })();
+</script>
+
+<style>
+  .pcs {
+    margin-top: var(--s-5);
+  }
+  .pcs__nastro {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .pcs__t {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 0 4px;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: rgba(255, 255, 255, 0.78);
+    transition: color var(--t-fast);
+  }
+  .pcs__t:hover {
+    color: #fff;
+  }
+  .pcs__t[aria-selected='true'] {
+    color: #fff;
+  }
+
+  /* Il filo: due strati sovrapposti fra un punto e il successivo. ::after
+     è il tratto spento, ::before è quello acceso che cresce sopra da
+     sinistra — si anima transform e non width, altrimenti il riquadro
+     verrebbe ridisegnato a ogni fotogramma. */
+  .pcs__t::after,
+  .pcs__t::before {
+    content: '';
+    position: absolute;
+    top: 17px;
+    height: 2px;
+    pointer-events: none;
+    left: calc(50% + 24px);
+    width: calc(100% - 48px);
+  }
+  .pcs__t::after {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  .pcs__t::before {
+    background: var(--sage);
+    z-index: 1;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--t-slow) var(--ease);
+  }
+  .pcs__t:last-child::after,
+  .pcs__t:last-child::before {
+    display: none;
+  }
+  .pcs__t[data-fatto]::before {
+    transform: scaleX(1);
+  }
+
+  .pcs__n {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition:
+      background var(--t-fast),
+      color var(--t-fast),
+      border-color var(--t-fast);
+  }
+  .pcs__t:hover .pcs__n {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  .pcs__t[data-fatto] .pcs__n {
+    border-color: var(--sage);
+  }
+  .pcs__t[aria-selected='true'] .pcs__n {
+    background: var(--sage);
+    border-color: var(--sage);
+    color: var(--ink);
+  }
+
+  /* A 14px nessuna delle sei etichette va a capo, misurato. */
+  .pcs__lab {
+    font-size: 14px;
+    line-height: 1.2;
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  .pcs__box {
+    margin-top: var(--s-4);
+    display: grid;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: var(--r-md);
+    padding: var(--s-4);
+    color: rgba(255, 255, 255, 0.82);
+  }
+  .pcs__p {
+    grid-area: 1 / 1;
+    max-width: 70ch;
+  }
+  /* i pannelli spenti restano nel flusso e tengono l'altezza del riquadro;
+     visibility li toglie dalla lettura vocale e dal giro del Tab */
+  .pcs__p[hidden] {
+    display: block;
+    visibility: hidden;
+  }
+  .pcs__p:focus-visible {
+    outline: none;
+  }
+  .pcs__tit {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 26px;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: #fff;
+    margin-bottom: var(--s-3);
+  }
+  .pcs__p p + p:not(.pcs__need) {
+    margin-top: var(--s-2);
+  }
+  .pcs__esempio {
+    color: rgba(255, 255, 255, 0.66);
+  }
+  .pcs__need {
+    margin-top: var(--s-2);
+    font-size: var(--fs-small);
+    color: var(--sage);
+  }
+
+  /* Sotto i 900px il percorso si rialza in verticale: sei colonne da
+     186px diventano 60 e la fila non regge. */
+  @media (max-width: 899px) {
+    .pcs__nastro {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .pcs__t {
+      flex: 0 0 auto;
+      flex-direction: row;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 0;
+      text-align: left;
+    }
+    .pcs__lab {
+      text-align: left;
+      font-size: 16px;
+    }
+    .pcs__t::after,
+    .pcs__t::before {
+      top: calc(50% + 24px);
+      left: 17px;
+      width: 2px;
+      height: calc(100% - 48px);
+    }
+    .pcs__t::before {
+      transform: scaleY(0);
+      transform-origin: center top;
+    }
+    .pcs__t[data-fatto]::before {
+      transform: scaleY(1);
+    }
+    .pcs__box {
+      margin-top: var(--s-3);
+    }
+    .pcs__tit {
+      font-size: 22px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pcs__t::before {
+      transition: none;
+    }
+  }
+</style>

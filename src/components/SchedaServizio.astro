@@ -1,0 +1,164 @@
+---
+import type { Servizio } from '../data/servizi';
+import { Image } from 'astro:assets';
+
+interface Props {
+  servizio: Servizio;
+}
+
+const { servizio } = Astro.props;
+---
+
+<article class="scheda" data-gruppo={servizio.gruppo}>
+  <div class="scheda__media">
+    {
+      servizio.img ? (
+        <Image class="scheda__img" src={servizio.img} alt={servizio.alt ?? servizio.nome} width={880} height={550} loading="lazy" />
+      ) : (
+        <div class="scheda__img" data-placeholder="Foto servizio 880 × 550" />
+      )
+    }
+    <p class="scheda__cat">{servizio.categoria}</p>
+  </div>
+  <div class="scheda__corpo">
+    <h3 class="scheda__titolo">
+      <a class="scheda__link" href={`/servizi/${servizio.slug}/`}>{servizio.nome}</a>
+    </h3>
+    <p class="scheda__frase">{servizio.frase}</p>
+  </div>
+  <span class="plus scheda__piu" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>
+  </span>
+</article>
+
+<style>
+  /* Tutta la card è cliccabile: il link sta sul titolo (anchor text buono
+     per la ricerca) e si allarga con ::after. Il "+" è decorativo — un
+     secondo elemento cliccabile allo stesso indirizzo darebbe due fermate
+     di Tab per la stessa pagina. */
+  .scheda {
+    position: relative;
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    width: clamp(300px, 27vw, 380px);
+    background: #fff;
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    scroll-snap-align: start;
+    transition:
+      transform var(--t-mid) ease,
+      box-shadow var(--t-mid) ease;
+  }
+  .scheda:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .scheda__media {
+    flex: 0 0 auto;
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: linear-gradient(155deg, #2c3a46, #3a3550 46%, #2f3b2c);
+  }
+  .scheda__media :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .scheda__img[data-placeholder]::after {
+    content: attr(data-placeholder);
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.42);
+  }
+
+  /* Verde con testo bianco — 6,4:1. Non sage: bianco su sage fa 2,4:1 ed è
+     vietato per il testo. */
+  .scheda__cat {
+    position: absolute;
+    left: 14px;
+    bottom: 14px;
+    z-index: 2;
+    padding: 7px 14px;
+    border-radius: var(--r-pill);
+    background: var(--green);
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+  }
+
+  /* Niente position:relative qui: se il corpo è posizionato diventa lui il
+     riferimento dell'::after del link, e il rettangolo cliccabile si
+     fermerebbe alla parte bianca. Il riferimento deve restare .scheda. */
+  .scheda__corpo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: var(--s-3) var(--s-3) 62px;
+  }
+  .scheda__titolo {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--fs-h3);
+    line-height: 1.1;
+    letter-spacing: var(--tracking-title);
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .scheda__link {
+    color: inherit;
+    text-decoration: none;
+  }
+  .scheda:has(.scheda__link:focus-visible) {
+    outline: 3px solid var(--g2);
+    outline-offset: 3px;
+  }
+  .scheda__link:focus-visible {
+    outline: none;
+  }
+  .scheda__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+  }
+  .scheda__frase {
+    margin-top: 8px;
+    color: var(--ink-soft);
+    font-size: 16px;
+    line-height: 1.45;
+  }
+
+  .scheda .scheda__piu {
+    position: absolute;
+    right: var(--s-2);
+    bottom: var(--s-2);
+    z-index: 3;
+    width: 38px;
+    height: 38px;
+    background: var(--green);
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    pointer-events: none;
+  }
+  .scheda .scheda__piu svg {
+    stroke: #fff;
+  }
+  .scheda:hover .scheda__piu {
+    background: var(--green-deep);
+  }
+</style>

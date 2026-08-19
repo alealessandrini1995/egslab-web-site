@@ -1,0 +1,196 @@
+---
+import { recensioni } from '../data/recensioni';
+import Icon from './Icon.astro';
+---
+
+<section class="section" aria-labelledby="titolo-recensioni">
+  <div class="wrap wrap--wide">
+    <div class="head head--center reveal">
+      <p class="eyebrow">Recensioni</p>
+      <h2 class="h2" id="titolo-recensioni">Cosa dicono di noi</h2>
+      <p class="lead">Recensioni vere, riportate dalla nostra scheda Google.</p>
+    </div>
+
+    <div class="quotes">
+      {
+        recensioni.map((r, i) => (
+          <figure class="quote reveal" data-delay={i > 0 ? String(i) : undefined}>
+            <p class="quote__fonte">
+              <Icon name="google" class="quote__g" />
+              <span class="sr-only">Recensione pubblicata su Google</span>
+            </p>
+            <p class="quote__voto">
+              <span class="stelle" aria-hidden="true">
+                ★★★★★
+              </span>
+              <span class="sr-only">Valutazione: 5 stelle su 5</span>
+            </p>
+            <blockquote id={r.id}>{r.testo}</blockquote>
+            <p class="quote__espandi">
+              <button class="quote__piu" type="button" data-espandi aria-expanded="false" aria-controls={r.id}>
+                Leggi di più
+              </button>
+            </p>
+            <figcaption>
+              <span class="quote__avatar">{r.iniziali}</span>
+              <span class="quote__who">
+                <b>{r.nome}</b>
+                <span>{r.ruolo}</span>
+              </span>
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+
+    <p class="section-foot reveal">
+      <a class="btn btn--green" href="https://www.google.com/search?q=egslab" target="_blank" rel="noopener">
+        Leggi tutte le recensioni su Google
+      </a>
+    </p>
+  </div>
+</section>
+
+<script>
+  (function recensioni() {
+    const carte = document.querySelectorAll<HTMLElement>('.quote');
+    if (!carte.length) return;
+
+    carte.forEach((carta) => {
+      const testo = carta.querySelector<HTMLElement>('blockquote');
+      const bottone = carta.querySelector<HTMLButtonElement>('[data-espandi]');
+      if (!testo || !bottone) return;
+
+      function serve() {
+        if (carta.hasAttribute('data-aperta')) return;
+        const tagliato = testo!.scrollHeight > testo!.clientHeight + 2;
+        carta.toggleAttribute('data-tagliata', tagliato);
+      }
+
+      bottone.addEventListener('click', () => {
+        const apre = !carta.hasAttribute('data-aperta');
+        carta.toggleAttribute('data-aperta', apre);
+        bottone.setAttribute('aria-expanded', String(apre));
+        bottone.textContent = apre ? 'Leggi meno' : 'Leggi di più';
+      });
+
+      serve();
+      window.addEventListener('resize', serve);
+    });
+  })();
+</script>
+
+<style>
+  .quotes {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-3);
+    margin-top: var(--s-6);
+  }
+  @media (min-width: 820px) {
+    .quotes {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  /* Il colore entra dal bordo, non dal fondo: la card resta bianca e la
+     sezione resta una fascia chiara. */
+  .quote {
+    display: flex;
+    flex-direction: column;
+    padding: var(--s-4);
+    border-radius: var(--r-md);
+    background: #fff;
+    border: 3.5px solid var(--green);
+    box-shadow: var(--shadow-sm);
+  }
+  .quote__fonte {
+    display: flex;
+    align-items: center;
+    line-height: 0;
+  }
+  .quote__fonte :global(.quote__g) {
+    width: 22px;
+    height: 22px;
+  }
+  /* Ambra come le stelle di Google, per riconoscibilità: sul bianco fa
+     1,7:1, deroga dichiarata — regge perché il voto è scritto accanto per
+     la sintesi vocale. */
+  .quote__voto {
+    margin-top: 10px;
+    margin-bottom: var(--s-1);
+  }
+  .stelle {
+    font-size: 17px;
+    letter-spacing: 2px;
+    line-height: 1;
+    color: #fbbc04;
+  }
+  /* Il testo è intero nell'HTML: si taglia solo la vista, a sette righe,
+     e il taglio cade sempre fra due righe, mai a metà. */
+  .quote blockquote {
+    margin-top: var(--s-3);
+    font-size: 17px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 7;
+    overflow: hidden;
+  }
+  .quote[data-aperta] blockquote {
+    -webkit-line-clamp: unset;
+    overflow: visible;
+  }
+  .quote__espandi {
+    margin-top: 10px;
+    display: none;
+  }
+  .quote[data-tagliata] .quote__espandi {
+    display: block;
+  }
+  .quote__piu {
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: var(--fs-small);
+    color: var(--green);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .quote__piu:hover {
+    color: var(--green-deep);
+  }
+  .quote figcaption {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: var(--s-4);
+  }
+  .quote__avatar {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: var(--sage-tint);
+    display: grid;
+    place-items: center;
+    font-size: 10px;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .quote__who {
+    font-size: var(--fs-small);
+    line-height: 1.35;
+  }
+  .quote__who b {
+    font-family: var(--font-display);
+    font-weight: 700;
+    display: block;
+  }
+  .quote__who span {
+    color: var(--ink-soft);
+  }
+</style>

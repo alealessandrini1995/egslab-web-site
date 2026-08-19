@@ -1,0 +1,102 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArtCard from '../../components/ArtCard.astro';
+import { perData, dataItaliana } from '../../lib/blog';
+
+const articoli = perData(await getCollection('blog'));
+---
+
+<BaseLayout title="Blog" description="Guide e consigli su web, grafica e digitale.">
+  <section class="section art-pagina" aria-labelledby="titolo-hub">
+    <div class="wrap wrap--wide">
+      <nav class="briciole" aria-label="Dove ti trovi">
+        <ol>
+          <li><a href="/">Home</a></li>
+          <li aria-current="page">Blog</li>
+        </ol>
+      </nav>
+
+      <div class="head head--center" style="margin-top:var(--s-4)">
+        <p class="eyebrow">Il blog di egslab</p>
+        <h1 class="h2" id="titolo-hub">
+          <span class="riga">Guide e consigli su web,</span>
+          <span class="riga grad">grafica e digitale</span>
+        </h1>
+      </div>
+
+      <div class="giornale">
+        {
+          articoli.map((a) => (
+            <ArtCard
+              href={`/blog/${a.id}/`}
+              categoria={a.data.category}
+              data={dataItaliana(a.data.date)}
+              titolo={a.data.title}
+              excerpt={a.data.excerpt}
+              tempo={a.data.readingTime}
+              img={a.data.coverCard}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .art-pagina {
+    padding-top: var(--s-5);
+  }
+
+  .briciole ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    list-style: none;
+    font-size: 13px;
+    color: var(--ink-faint);
+  }
+  .briciole li + li::before {
+    content: '/';
+    margin-right: 8px;
+    color: var(--hairline);
+  }
+  .briciole a {
+    color: var(--ink-faint);
+    text-underline-offset: 3px;
+  }
+  .briciole a:hover {
+    color: var(--green);
+  }
+
+  .h2 :global(.riga) {
+    display: block;
+  }
+  .h2 :global(.riga + .riga) {
+    margin-top: 0.06em;
+  }
+
+  .giornale {
+    margin-top: var(--s-5);
+    display: grid;
+    gap: var(--s-4);
+    border-top: 1px solid var(--hairline);
+    padding-top: var(--s-4);
+  }
+  @media (min-width: 900px) {
+    .giornale {
+      grid-template-columns: repeat(3, 1fr);
+      column-gap: var(--s-5);
+    }
+    .giornale :global(.art + .art)::before {
+      content: '';
+      position: absolute;
+      left: calc(var(--s-5) / -2);
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: var(--hairline);
+    }
+  }
+</style>

@@ -1,34 +1,93 @@
 :root {
-  /* Colori */
-  --color-bg: #ffffff;
-  --color-text: #1a1a1a;
-  --color-muted: #5f5f5f;
-  --color-primary: #1a1a1a;
-  --color-border: #e2e2e2;
+  /* Marca */
+  --sage: #92b079;
+  --sage-tint: #edf2e7;
+  --green: #416935;
+  --green-deep: #2c4823;
+
+  /* Gradiente d'accento */
+  --g1: #7ec8e3; /* ciano */
+  --g2: #8a7be0; /* viola */
+  --g3: #d96ba5; /* magenta */
+  --g4: #e85d8a; /* rosa */
+  --grad: linear-gradient(100deg, var(--g1), var(--g2) 38%, var(--g3) 72%, var(--g4));
+
+  /* Neutri */
+  --bg: #ffffff;
+  --bg-soft: #f4f5f1;
+  --night: #0c0e0c; /* palchi scuri: hero e piè di pagina */
+  --ink: #131612; /* 18,2:1 su bianco */
+  --ink-soft: #5b6157; /* 6,4:1 su bianco */
+  --ink-faint: #6b7267; /* 5,0:1 su bianco */
+  --on-dark: #ffffff;
+  --on-dark-soft: rgba(255, 255, 255, 0.72);
+  --hairline: rgba(19, 22, 18, 0.1);
+
+  /* Vetro */
+  --glass-light: rgba(255, 255, 255, 0.72);
+  --glass-dark: rgba(18, 20, 18, 0.42);
+  --glass-dark-2: rgba(255, 255, 255, 0.07);
+  --glass-brd-l: rgba(255, 255, 255, 0.92);
+  --glass-brd-d: rgba(255, 255, 255, 0.16);
+  --blur: blur(24px) saturate(160%);
+  --blur-lg: blur(40px) saturate(170%);
 
   /* Tipografia */
-  --font-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-size-base: 1rem;
-  --font-size-sm: 0.875rem;
-  --font-size-lg: 1.25rem;
-  --font-size-xl: 1.75rem;
-  --font-size-2xl: 2.5rem;
-  --line-height-base: 1.5;
+  --font-display: 'League Spartan', 'Inter', 'Helvetica Neue', Arial, system-ui, sans-serif;
+  --font-body: 'Inter', 'Helvetica Neue', Arial, system-ui, sans-serif;
 
-  /* Spaziature */
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 1rem;
-  --space-4: 1.5rem;
-  --space-5: 2rem;
-  --space-6: 3rem;
-  --space-7: 4rem;
+  --fs-hero: clamp(34px, 5.4vw, 68px);
+  --fs-h2: clamp(30px, 4.4vw, 54px);
+  --fs-h3: clamp(22px, 2.4vw, 28px);
+  --fs-h4: 19px;
+  --fs-lead: clamp(17px, 1.6vw, 20px);
+  --fs-body: 17px;
+  --fs-small: 15px;
+  --fs-micro: 13px;
+  --tracking-title: -0.04em;
 
-  /* Breakpoint (uso in media query come valore di riferimento) */
-  --breakpoint-sm: 480px;
-  --breakpoint-md: 768px;
-  --breakpoint-lg: 1024px;
+  /* Link con freccia: spazio riservato alla freccia, stacco compreso */
+  --link-freccia: 0.92em;
 
-  /* Layout */
-  --container-max-width: 72rem;
+  /* Spazi */
+  --s-1: 8px;
+  --s-2: 16px;
+  --s-3: 24px;
+  --s-4: 32px;
+  --s-5: 48px;
+  --s-6: 64px;
+  --s-7: 96px;
+  --s-8: 128px;
+  --s-9: 160px;
+
+  /* Raggi */
+  --r-xs: 14px;
+  --r-sm: 20px;
+  --r-md: 28px;
+  --r-lg: 40px;
+  --r-xl: 56px;
+  --r-pill: 999px;
+
+  /* Ombre */
+  --shadow-sm: 0 1px 2px rgba(19, 22, 18, 0.04), 0 8px 24px -12px rgba(19, 22, 18, 0.16);
+  --shadow-md: 0 2px 4px rgba(19, 22, 18, 0.05), 0 24px 56px -24px rgba(19, 22, 18, 0.3);
+  --shadow-dark: 0 40px 80px -40px rgba(0, 0, 0, 0.9);
+
+  /* Movimento */
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --t-fast: 0.2s;
+  --t-mid: 0.35s;
+  --t-slow: 0.5s;
+
+  /* Ritmo verticale — due leve indipendenti: --sp-fuori è l'aria FRA due
+     sezioni (l'unica cosa che separa due palchi bianchi consecutivi),
+     --sp-dentro è l'aria DENTRO un palco. Legate all'altezza della finestra,
+     non fisse. */
+  --sp-fuori: clamp(64px, 9vh, 128px);
+  --sp-dentro: clamp(64px, 9vh, 128px);
+
+  --wrap: 1120px;
+  --wrap-wide: 1320px;
+  --header-h: 74px;
+  --header-gap: 14px;
 }

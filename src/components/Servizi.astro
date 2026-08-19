@@ -1,0 +1,261 @@
+---
+import { servizi, gruppi } from '../data/servizi';
+import SchedaServizio from './SchedaServizio.astro';
+---
+
+<section class="section section--schermo" aria-labelledby="titolo-servizi">
+  <div class="wrap wrap--wide">
+    <div class="head head--largo reveal">
+      <p class="eyebrow">I nostri servizi</p>
+      <h2 class="h2" id="titolo-servizi">Tutto quello che serve al tuo progetto, <span class="grad">in un posto solo</span></h2>
+    </div>
+
+    <div class="rail-head reveal">
+      <div class="pillole" role="group" aria-label="Vai a un gruppo di servizi">
+        {
+          gruppi.map((g, i) => (
+            <button class="pillola" type="button" data-vai={g.slug} aria-current={i === 0 ? 'true' : undefined}>
+              {g.nome}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="rail-bleed">
+    <div class="rail" data-rail-track>
+      {servizi.map((s) => <SchedaServizio servizio={s} />)}
+    </div>
+  </div>
+
+  <div class="wrap wrap--wide">
+    <div class="rail-nav rail-nav--sotto">
+      <button class="rail-btn" type="button" data-rail="prev" aria-label="Servizi precedenti">‹</button>
+      <button class="rail-btn" type="button" data-rail="next" aria-label="Servizi successivi">›</button>
+    </div>
+    <div class="section-foot reveal">
+      <a class="link" href="/servizi/">Vedi tutti i servizi</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function rail() {
+    const senzaAnimazioni = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const pista = document.querySelector<HTMLElement>('[data-rail-track]');
+    if (!pista) return;
+
+    const frecce = document.querySelectorAll<HTMLButtonElement>('[data-rail]');
+    const card = pista.firstElementChild as HTMLElement | null;
+    if (!card) return;
+
+    function passo() {
+      const stile = getComputedStyle(pista!);
+      const gap = parseFloat(stile.columnGap || stile.gap) || 24;
+      return card!.getBoundingClientRect().width + gap;
+    }
+
+    function aggiorna() {
+      const max = pista!.scrollWidth - pista!.clientWidth - 2;
+      frecce.forEach((f) => {
+        f.disabled = f.dataset.rail === 'prev' ? pista!.scrollLeft <= 2 : pista!.scrollLeft >= max;
+      });
+    }
+
+    frecce.forEach((f) => {
+      f.addEventListener('click', () => {
+        pista!.scrollBy({ left: f.dataset.rail === 'next' ? passo() : -passo(), behavior: senzaAnimazioni ? 'auto' : 'smooth' });
+      });
+    });
+
+    const pillole = document.querySelectorAll<HTMLButtonElement>('[data-vai]');
+
+    function bordoSinistro() {
+      return parseFloat(getComputedStyle(pista!).paddingLeft) || 0;
+    }
+
+    function vaiA(gruppo: string | undefined) {
+      const prima = pista!.querySelector<HTMLElement>(`[data-gruppo="${gruppo}"]`);
+      if (!prima) return;
+      const scarto = prima.getBoundingClientRect().left - pista!.getBoundingClientRect().left - bordoSinistro();
+      pista!.scrollBy({ left: scarto, behavior: senzaAnimazioni ? 'auto' : 'smooth' });
+    }
+
+    function accendiPillola() {
+      if (!pillole.length) return;
+      const carte = pista!.querySelectorAll<HTMLElement>('[data-gruppo]');
+      let attivo: string | undefined;
+
+      if (pista!.scrollLeft >= pista!.scrollWidth - pista!.clientWidth - 2) {
+        attivo = carte[carte.length - 1].dataset.gruppo;
+      } else {
+        const soglia = pista!.getBoundingClientRect().left + bordoSinistro() + 4;
+        carte.forEach((c) => {
+          if (c.getBoundingClientRect().left <= soglia) attivo = c.dataset.gruppo;
+        });
+      }
+      if (!attivo) attivo = carte[0].dataset.gruppo;
+      pillole.forEach((b) => {
+        if (b.dataset.vai === attivo) b.setAttribute('aria-current', 'true');
+        else b.removeAttribute('aria-current');
+      });
+    }
+
+    pillole.forEach((b) => {
+      b.addEventListener('click', () => vaiA(b.dataset.vai));
+    });
+
+    function suScorrimento() {
+      aggiorna();
+      accendiPillola();
+    }
+
+    pista.addEventListener('scroll', suScorrimento, { passive: true });
+    window.addEventListener('resize', suScorrimento);
+    suScorrimento();
+  })();
+</script>
+
+<style>
+  @media (min-width: 900px) {
+    .rail-head {
+      margin-top: var(--s-4);
+    }
+    .section-foot {
+      margin-top: var(--s-4);
+    }
+  }
+
+  .rail-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    margin-top: var(--s-6);
+  }
+  @media (min-width: 900px) {
+    .rail-head {
+      display: grid;
+      grid-template-columns: 1.7fr 1fr;
+      gap: var(--s-5);
+      align-items: center;
+    }
+  }
+  @media (max-width: 899px) {
+    .rail-head {
+      display: block;
+    }
+    .pillole {
+      margin-top: 0;
+    }
+  }
+
+  .pillole {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-block: 2px;
+    margin-inline: calc(var(--s-1) * -1);
+    padding-inline: var(--s-1);
+  }
+  .pillole::-webkit-scrollbar {
+    display: none;
+  }
+  .pillola {
+    flex: 0 0 auto;
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: -0.01em;
+    padding: 8px 16px;
+    border-radius: var(--r-pill);
+    background: #fff;
+    color: var(--ink-soft);
+    border: 1px solid var(--hairline);
+    transition:
+      background var(--t-fast),
+      color var(--t-fast),
+      border-color var(--t-fast);
+  }
+  .pillola:hover {
+    background: var(--sage-tint);
+    color: var(--ink);
+    border-color: transparent;
+  }
+  .pillola[aria-current='true'] {
+    background: var(--green);
+    color: #fff;
+    border-color: transparent;
+  }
+
+  .rail-nav {
+    display: none;
+    gap: 10px;
+  }
+  @media (min-width: 900px) {
+    .rail-nav {
+      display: flex;
+    }
+  }
+  .rail-btn {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    font-size: 20px;
+    line-height: 1;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid var(--hairline);
+    box-shadow: var(--shadow-sm);
+    transition:
+      transform var(--t-fast),
+      opacity var(--t-fast);
+  }
+  .rail-btn:hover {
+    transform: translateY(-2px);
+  }
+  .rail-btn[disabled] {
+    opacity: 0.3;
+    cursor: default;
+    transform: none;
+  }
+  .rail-nav--sotto {
+    display: flex;
+    justify-content: center;
+    gap: var(--s-2);
+    margin-top: var(--s-3);
+  }
+
+  /* Il rail è largo quanto la finestra, ma la prima card parte allineata
+     al titolo: --rientro riporta il bordo interno del rail su quella
+     linea. Niente 100vw: includerebbe la barra di scorrimento e
+     sfaserebbe il conto di una decina di pixel. */
+  .rail-bleed {
+    width: 100%;
+  }
+  .rail {
+    --rientro: max(var(--s-3), calc(50% - var(--wrap-wide) / 2 + var(--s-3)));
+    display: flex;
+    gap: var(--s-3);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    /* il rail ritaglia anche in verticale: senza questo respiro l'ombra
+       della card al passaggio del mouse verrebbe troncata */
+    padding-block: var(--s-4) 64px;
+    margin-bottom: -32px;
+    padding-inline: var(--rientro);
+    scroll-padding-left: var(--rientro);
+    scrollbar-width: none;
+  }
+  .rail::-webkit-scrollbar {
+    display: none;
+  }
+</style>

@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import SEO from '../components/SEO.astro';
+import SvgSprite from '../components/SvgSprite.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { site } from '../config/site';
@@ -9,9 +10,10 @@ interface Props {
   title: string;
   description?: string;
   image?: string;
+  organization?: boolean;
 }
 
-const { title, description, image } = Astro.props;
+const { title, description, image, organization } = Astro.props;
 ---
 
 <html lang={site.lang}>
@@ -19,13 +21,207 @@ const { title, description, image } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <SEO title={title} description={description} image={image} />
+    <link rel="preload" href="/fonts/league-spartan-800.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin />
+    <SEO title={title} description={description} image={image} organization={organization} />
   </head>
   <body>
+    <a class="skip-link" href="#contenuto">Vai al contenuto</a>
+    <SvgSprite />
     <Header />
-    <main class="container">
+    <main id="contenuto">
       <slot />
     </main>
     <Footer />
   </body>
 </html>
+
+<script>
+  document.documentElement.classList.add('js');
+  const senzaAnimazioni = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* 02. Pannelli apribili ("+"): comportamento unico per tessere e FAQ,
+     condiviso qui perché entrambi i componenti usano [data-toggle] e uno
+     script scoped in ciascuno duplicherebbe la stessa logica due volte. */
+  (function pannelli() {
+    const comandi = document.querySelectorAll<HTMLElement>('[data-toggle]');
+    if (!comandi.length) return;
+
+    function fineTransizione(e: TransitionEvent) {
+      const p = e.currentTarget as HTMLElement;
+      if (e.target !== p) return;
+      if (e.propertyName !== 'max-height') return;
+      if (p.dataset.aperto === 'si') p.style.maxHeight = 'none';
+    }
+
+    function chiudi(p: HTMLElement) {
+      p.dataset.aperto = 'no';
+      p.style.maxHeight = p.scrollHeight + 'px';
+      p.offsetHeight;
+      p.style.maxHeight = '0px';
+    }
+
+    function apri(p: HTMLElement) {
+      p.dataset.aperto = 'si';
+      p.style.maxHeight = p.scrollHeight + 'px';
+    }
+
+    const MARGINE = 16;
+    function portaInVista(elemento: Element) {
+      const pista = elemento.closest<HTMLElement>('[data-rail-track]');
+      if (!pista) return;
+      const c = elemento.getBoundingClientRect();
+      const r = pista.getBoundingClientRect();
+      let scarto = 0;
+      if (c.right > r.right - MARGINE) scarto = c.right - r.right + MARGINE;
+      else if (c.left < r.left + MARGINE) scarto = c.left - r.left - MARGINE;
+      if (!scarto) return;
+      pista.scrollBy({ left: scarto, behavior: senzaAnimazioni ? 'auto' : 'smooth' });
+    }
+
+    comandi.forEach((comando) => {
+      const pannello = document.getElementById(comando.dataset.toggle!);
+      if (!pannello) return;
+      const card = comando.closest('.card');
+
+      pannello.dataset.aperto = comando.getAttribute('aria-expanded') === 'true' ? 'si' : 'no';
+      pannello.addEventListener('transitionend', fineTransizione as EventListener);
+
+      comando.addEventListener('click', () => {
+        const eraAperto = comando.getAttribute('aria-expanded') === 'true';
+        comando.setAttribute('aria-expanded', String(!eraAperto));
+
+        if (senzaAnimazioni) {
+          pannello.dataset.aperto = eraAperto ? 'no' : 'si';
+          pannello.style.maxHeight = eraAperto ? '0px' : 'none';
+        } else if (eraAperto) {
+          chiudi(pannello);
+        } else {
+          apri(pannello);
+        }
+
+        if (!eraAperto && card) portaInVista(card);
+      });
+    });
+
+    let attesa: ReturnType<typeof setTimeout>;
+    window.addEventListener('resize', () => {
+      clearTimeout(attesa);
+      attesa = setTimeout(() => {
+        document.querySelectorAll<HTMLElement>('[data-toggle][aria-expanded="true"]').forEach((c) => {
+          const p = document.getElementById(c.dataset.toggle!);
+          if (p) p.style.maxHeight = 'none';
+        });
+      }, 150);
+    });
+  })();
+
+  /* 04. Rivelazione allo scroll: ogni .reveal compare una volta sola. */
+  (function rivelazione() {
+    const elementi = document.querySelectorAll<HTMLElement>('.reveal');
+    if (!elementi.length) return;
+
+    if (senzaAnimazioni || !('IntersectionObserver' in window)) {
+      elementi.forEach((el) => el.classList.add('is-visible'));
+      return;
+    }
+
+    const osservatore = new IntersectionObserver(
+      (voci) => {
+        voci.forEach((voce) => {
+          if (!voce.isIntersecting) return;
+          voce.target.classList.add('is-visible');
+          osservatore.unobserve(voce.target);
+        });
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
+    );
+    elementi.forEach((el) => osservatore.observe(el));
+  })();
+
+  /* 05. Fondo astratto animato — segnaposto del video di hero e footer.
+     I colori li porta il singolo <canvas> con data-fondo/data-scia/data-linee,
+     così i due usi (hero chiara, footer scura) restano indipendenti. */
+  (function fondoAnimato() {
+    if (senzaAnimazioni) return;
+    const tele = document.querySelectorAll<HTMLCanvasElement>('[data-canvas]');
+    if (!tele.length) return;
+
+    tele.forEach((canvas) => {
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      let w = 0,
+        h = 0,
+        t = 0,
+        attivo = true,
+        girando = false;
+      const densita = canvas.dataset.canvas === 'footer' ? 16 : 26;
+
+      const cFondo = canvas.dataset.fondo || '#0C0E0C';
+      const cScia = canvas.dataset.scia || 'rgba(12,14,12,.055)';
+      const cLinee = (canvas.dataset.linee || 'rgba(255,255,255,.42)').split('|');
+
+      const curve = Array.from({ length: densita }, (_, i) => ({
+        a: 0.25 + i * 0.09,
+        b: 0.6 + (i % 7) * 0.21,
+        c: 1.3 + (i % 5) * 0.4,
+        r: 0.18 + (i % 9) * 0.045,
+        s: 0.00022 + (i % 6) * 0.00007,
+      }));
+
+      function dimensiona() {
+        const d = Math.min(window.devicePixelRatio || 1, 2);
+        w = canvas.width = Math.max(1, Math.round(canvas.offsetWidth * d));
+        h = canvas.height = Math.max(1, Math.round(canvas.offsetHeight * d));
+        ctx!.fillStyle = cFondo;
+        ctx!.fillRect(0, 0, w, h);
+      }
+
+      function disegna() {
+        if (!attivo) {
+          girando = false;
+          return;
+        }
+        girando = true;
+        t++;
+        ctx!.fillStyle = cScia;
+        ctx!.fillRect(0, 0, w, h);
+        ctx!.lineWidth = Math.max(1, w / 1400);
+
+        const cx = w / 2,
+          cy = h / 2,
+          R = Math.min(w, h);
+        for (let i = 0; i < curve.length; i++) {
+          const p = curve[i],
+            k = t * p.s * 60;
+          ctx!.strokeStyle = cLinee[i % cLinee.length];
+          ctx!.beginPath();
+          for (let j = 0; j <= 90; j++) {
+            const u = (j / 90) * Math.PI * 2;
+            const rr = R * p.r * (1 + 0.42 * Math.sin(u * p.c + k * 1.7));
+            const px = cx + Math.cos(u * p.a + k) * rr * 1.9;
+            const py = cy + Math.sin(u * p.b + k * 1.2) * rr;
+            j ? ctx!.lineTo(px, py) : ctx!.moveTo(px, py);
+          }
+          ctx!.stroke();
+        }
+        requestAnimationFrame(disegna);
+      }
+
+      dimensiona();
+      window.addEventListener('resize', dimensiona);
+
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(
+          ([voce]) => {
+            attivo = voce.isIntersecting;
+            if (attivo && !girando) requestAnimationFrame(disegna);
+          },
+          { threshold: 0.01 }
+        ).observe(canvas);
+      }
+      requestAnimationFrame(disegna);
+    });
+  })();
+</script>

@@ -9,7 +9,7 @@ import { site } from '../config/site';
     <p>Contenuto segnaposto della pagina contatti.</p>
     <ul>
       <li><a href={`mailto:${site.contact.email}`}>{site.contact.email}</a></li>
-      <li><a href={`tel:${site.contact.phone}`}>{site.contact.phone}</a></li>
+      <li><a href={site.contact.whatsapp} target="_blank" rel="noopener">WhatsApp</a></li>
     </ul>
   </section>
 </BaseLayout>

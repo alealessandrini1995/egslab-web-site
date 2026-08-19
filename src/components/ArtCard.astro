@@ -1,0 +1,127 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  href: string;
+  categoria: string;
+  data: string;
+  titolo: string;
+  excerpt: string;
+  tempo: string;
+  img?: ImageMetadata;
+}
+
+const { href, categoria, data, titolo, excerpt, tempo, img } = Astro.props;
+---
+
+<article class="art">
+  <div class="art__media">
+    {
+      img ? (
+        <Image class="art__img" src={img} alt={titolo} width={900} height={600} loading="lazy" />
+      ) : (
+        <div class="art__img" data-placeholder="Foto 900 × 600" />
+      )
+    }
+  </div>
+  <p class="art__kicker">{categoria} <span aria-hidden="true">·</span> {data}</p>
+  <h3 class="art__titolo"><a class="art__link" href={href}>{titolo}</a></h3>
+  <p class="art__lead">{excerpt}</p>
+  <p class="art__coda"><span class="link">Leggi l’articolo</span> <span class="art__tempo">{tempo}</span></p>
+</article>
+
+<style>
+  .art {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .art__media {
+    position: relative;
+    aspect-ratio: 3 / 2;
+    border-radius: var(--r-xs);
+    overflow: hidden;
+  }
+  /* width/height al 100%: senza, gli attributi width/height dell'<img>
+     detterebbero l'altezza e il rapporto 3:2 non verrebbe applicato. */
+  .art__media :global(img),
+  .art__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: linear-gradient(155deg, #2c3a46, #3a3550 46%, #2f3b2c);
+  }
+  .art__img[data-placeholder]::after {
+    content: attr(data-placeholder);
+    position: absolute;
+    inset: auto 0 44% 0;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.42);
+  }
+
+  .art__kicker {
+    margin-top: 14px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 11.5px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--green);
+  }
+  .art__titolo {
+    margin-top: 8px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(20px, 1.9vw, 25px);
+    line-height: 1.18;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  .art__link {
+    color: var(--ink);
+    text-decoration: none;
+    transition: color var(--t-fast);
+  }
+  .art__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+  }
+  .art:has(.art__link:focus-visible) {
+    outline: 3px solid var(--green);
+    outline-offset: 6px;
+  }
+  .art__link:focus-visible {
+    outline: none;
+  }
+  .art:hover .art__link,
+  .art:focus-within .art__link {
+    color: var(--green);
+  }
+  .art__lead {
+    margin-top: 9px;
+    color: var(--ink-soft);
+    font-size: var(--fs-small);
+    line-height: 1.6;
+  }
+  .art__coda {
+    margin-top: auto;
+    padding-top: var(--s-3);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .art__tempo {
+    font-size: 12.5px;
+    color: var(--ink-faint);
+  }
+</style>

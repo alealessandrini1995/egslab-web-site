@@ -1,0 +1,688 @@
+---
+import { site } from '../config/site';
+import { gruppi, servizi } from '../data/servizi';
+---
+
+<section class="section" aria-labelledby="titolo-cta">
+  <div class="wrap wrap--wide">
+    <div class="stage stage--night">
+      <div class="wrap">
+        <div class="head head--center reveal">
+          <p class="eyebrow">Richiedi un preventivo</p>
+          <h2 class="h2" id="titolo-cta">Raccontaci <span class="grad">il tuo progetto</span></h2>
+          <p class="lead">Il primo confronto è senza impegno e serve a capire se possiamo essere utili. Se non lo siamo, te lo diciamo.</p>
+          <div class="hero__cta">
+            <a class="btn btn--ghost" href={site.contact.whatsapp} target="_blank" rel="noopener">Scrivici su WhatsApp</a>
+            <button class="btn btn--sage" type="button" data-apri-modulo aria-expanded="false" aria-controls="cta-modulo">Inviaci una richiesta</button>
+            <a class="btn btn--ghost" href="/contatti/">Prenota una call</a>
+          </div>
+          <p class="lead cta-attesa" style="font-size:var(--fs-small);margin-top:var(--s-3)">Ti rispondiamo entro 24 ore lavorative.</p>
+
+          <div class="cta-modulo" id="cta-modulo" hidden>
+            <div class="cta-modulo__testa">
+              <p class="cta-modulo__et">Richiesta di preventivo</p>
+              <button class="cta-modulo__chiudi" type="button" data-chiudi-modulo>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+                Chiudi
+              </button>
+            </div>
+
+            {/* Modulo statico: output:'static' non spedisce nulla senza un servizio esterno (action) collegato in seguito. */}
+            <form class="modulo" id="modulo-preventivo" novalidate>
+              <div class="modulo__riga">
+                <label class="campo">
+                  <span class="campo__et">Nome <i aria-hidden="true">*</i></span>
+                  <input type="text" name="nome" required autocomplete="given-name" />
+                </label>
+                <label class="campo">
+                  <span class="campo__et">Cognome <i aria-hidden="true">*</i></span>
+                  <input type="text" name="cognome" required autocomplete="family-name" />
+                </label>
+              </div>
+
+              <div class="modulo__riga">
+                <label class="campo">
+                  <span class="campo__et">Email <i aria-hidden="true">*</i></span>
+                  <input type="email" name="email" required autocomplete="email" />
+                </label>
+                <label class="campo">
+                  <span class="campo__et">Telefono</span>
+                  <input type="tel" name="telefono" autocomplete="tel" />
+                </label>
+              </div>
+
+              <label class="campo">
+                <span class="campo__et">Azienda o nome del progetto</span>
+                <input type="text" name="azienda" autocomplete="organization" />
+              </label>
+
+              <fieldset class="modulo__gruppo">
+                <legend class="campo__et">Di cosa hai bisogno?</legend>
+                <p class="modulo__aiuto">Apri una categoria e spunta i servizi che ti servono.</p>
+                <div class="scelte scelte--tendine">
+                  {
+                    gruppi.map((g) => (
+                      <div class="tendina-box">
+                        <button class="pillola pillola--apri" type="button" data-tendina={g.slug} aria-expanded="false" aria-controls={`td-${g.slug}`} aria-haspopup="true">
+                          {g.nome}
+                        </button>
+                        <div class="tendina" id={`td-${g.slug}`} role="group" aria-label={`Servizi: ${g.nome}`} hidden>
+                          {servizi
+                            .filter((s) => s.gruppo === g.slug)
+                            .map((s) => (
+                              <label>
+                                <input type="checkbox" name="servizi" value={s.nome} />
+                                <span>{s.nome}</span>
+                              </label>
+                            ))}
+                        </div>
+                      </div>
+                    ))
+                  }
+                </div>
+                <div class="scelti" id="servizi-scelti" hidden>
+                  <p class="campo__et">Servizi scelti</p>
+                  <div class="scelti__lista" aria-live="polite"></div>
+                </div>
+              </fieldset>
+
+              <fieldset class="modulo__gruppo">
+                <legend class="campo__et">A che punto sei?</legend>
+                <div class="scelte">
+                  <label class="scelta"><input type="radio" name="punto" value="Parto da zero" /><span>Parto da zero</span></label>
+                  <label class="scelta"><input type="radio" name="punto" value="Ho già qualcosa e va rifatto" /><span>Ho già qualcosa e va rifatto</span></label>
+                  <label class="scelta"><input type="radio" name="punto" value="Ho già tutto, aggiungo un pezzo" /><span>Ho già tutto, aggiungo un pezzo</span></label>
+                </div>
+              </fieldset>
+
+              <label class="campo">
+                <span class="campo__et">Raccontaci il progetto <i aria-hidden="true">*</i></span>
+                <textarea name="messaggio" rows="4" required placeholder="Anche due righe: cosa stai costruendo e cosa ti serve."></textarea>
+              </label>
+
+              <label class="spunta">
+                <input type="checkbox" name="privacy" required />
+                <span>Ho letto e accetto l’<a href="/privacy/">informativa sulla privacy</a>. <i aria-hidden="true">*</i></span>
+              </label>
+
+              <label class="spunta">
+                <input type="checkbox" name="marketing" />
+                <span>Acconsento a ricevere comunicazioni commerciali da egslab. Facoltativo, e puoi ripensarci quando vuoi.</span>
+              </label>
+
+              <button class="btn btn--sage btn--block" type="submit">Invia la richiesta</button>
+              <p class="modulo__nota">I campi con <i aria-hidden="true">*</i> sono obbligatori. Ti rispondiamo entro 24 ore lavorative.</p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function moduloInCard() {
+    const apri = document.querySelector<HTMLButtonElement>('[data-apri-modulo]');
+    const box = document.getElementById('cta-modulo') as HTMLElement | null;
+    if (!apri || !box) return;
+
+    apri.addEventListener('click', () => {
+      const aperto = apri.getAttribute('aria-expanded') === 'true';
+      apri.setAttribute('aria-expanded', String(!aperto));
+      box.hidden = aperto;
+      if (!aperto) {
+        const primo = box.querySelector<HTMLElement>('input, textarea, select');
+        primo?.focus({ preventScroll: true });
+        box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    });
+  })();
+
+  (function tendineServizi() {
+    const bottoni = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-tendina]'));
+    const riepilogo = document.getElementById('servizi-scelti') as HTMLElement | null;
+    if (!bottoni.length || !riepilogo) return;
+
+    const lista = riepilogo.querySelector<HTMLElement>('.scelti__lista');
+    const caselle = Array.from(document.querySelectorAll<HTMLInputElement>('.tendina input[type="checkbox"]'));
+
+    function pannello(b: HTMLButtonElement) {
+      return document.getElementById(`td-${b.dataset.tendina}`) as HTMLElement | null;
+    }
+    function chiudi(b: HTMLButtonElement) {
+      b.setAttribute('aria-expanded', 'false');
+      const p = pannello(b);
+      if (p) p.hidden = true;
+    }
+    function chiudiTutte(tranne: HTMLButtonElement | null) {
+      bottoni.forEach((b) => {
+        if (b !== tranne) chiudi(b);
+      });
+    }
+
+    bottoni.forEach((b) => {
+      b.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const aperta = b.getAttribute('aria-expanded') === 'true';
+        chiudiTutte(b);
+        if (aperta) {
+          chiudi(b);
+          return;
+        }
+        b.setAttribute('aria-expanded', 'true');
+        const p = pannello(b);
+        if (p) {
+          p.hidden = false;
+          p.querySelector<HTMLElement>('input')?.focus({ preventScroll: true });
+        }
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('.tendina') || target.closest('[data-tendina]')) return;
+      chiudiTutte(null);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      const aperta = bottoni.find((b) => b.getAttribute('aria-expanded') === 'true');
+      if (!aperta) return;
+      chiudi(aperta);
+      aperta.focus();
+    });
+
+    function aggiorna() {
+      const scelti = caselle.filter((c) => c.checked);
+      riepilogo!.hidden = scelti.length === 0;
+      lista!.textContent = '';
+      scelti.forEach((c) => {
+        const g = document.createElement('span');
+        g.className = 'gettone';
+
+        const testo = document.createElement('span');
+        testo.textContent = c.value;
+
+        const x = document.createElement('button');
+        x.type = 'button';
+        x.className = 'gettone__x';
+        x.setAttribute('aria-label', `Togli ${c.value}`);
+        x.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+        x.addEventListener('click', () => {
+          c.checked = false;
+          aggiorna();
+        });
+
+        g.appendChild(testo);
+        g.appendChild(x);
+        lista!.appendChild(g);
+      });
+    }
+
+    caselle.forEach((c) => c.addEventListener('change', aggiorna));
+    aggiorna();
+  })();
+
+  (function chiudiModulo() {
+    const x = document.querySelector<HTMLButtonElement>('[data-chiudi-modulo]');
+    const apri = document.querySelector<HTMLButtonElement>('[data-apri-modulo]');
+    const box = document.getElementById('cta-modulo') as HTMLElement | null;
+    if (!x || !apri || !box) return;
+    x.addEventListener('click', () => {
+      box.hidden = true;
+      apri.setAttribute('aria-expanded', 'false');
+      apri.focus();
+      apri.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  })();
+</script>
+
+<style>
+  .hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    justify-content: center;
+    margin-top: var(--s-5);
+  }
+  body:has([data-apri-modulo][aria-expanded='true']) .cta-attesa {
+    display: none;
+  }
+
+  .modulo {
+    margin-top: var(--s-4);
+    text-align: left;
+    display: grid;
+    gap: var(--s-3);
+  }
+  .modulo__riga {
+    display: grid;
+    gap: var(--s-3);
+  }
+  @media (min-width: 680px) {
+    .modulo__riga {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .campo {
+    display: grid;
+    gap: 6px;
+  }
+  .campo__et {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: rgba(255, 255, 255, 0.82);
+  }
+  .campo__et i {
+    color: var(--sage);
+    font-style: normal;
+  }
+  .campo input,
+  .campo select,
+  .campo textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: var(--r-sm);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.4;
+    transition:
+      border-color var(--t-fast),
+      background var(--t-fast);
+  }
+  .campo textarea {
+    resize: vertical;
+    min-height: 96px;
+  }
+  .campo input::placeholder,
+  .campo textarea::placeholder {
+    color: rgba(255, 255, 255, 0.62);
+  }
+  .campo input:focus-visible,
+  .campo textarea:focus-visible {
+    outline: 2px solid var(--sage);
+    outline-offset: 2px;
+    background: rgba(255, 255, 255, 0.13);
+    border-color: rgba(255, 255, 255, 0.34);
+  }
+
+  /* <legend> non è figlio della griglia del fieldset: display:block sui
+     figli evita che il gap venga ignorato sotto il titolo. */
+  .modulo__gruppo {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    display: block;
+  }
+  .modulo__gruppo legend {
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin-bottom: 10px;
+  }
+  .modulo__gruppo .modulo__aiuto {
+    margin: 0 0 14px;
+  }
+  .modulo__gruppo legend + .scelte {
+    margin-top: 0;
+  }
+  .scelte {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .scelta {
+    position: relative;
+    display: inline-flex;
+  }
+  .scelta input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    margin: 0;
+  }
+  .scelta span {
+    display: inline-block;
+    padding: 9px 16px;
+    border-radius: var(--r-pill);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: rgba(255, 255, 255, 0.86);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition:
+      background var(--t-fast),
+      border-color var(--t-fast),
+      color var(--t-fast);
+  }
+  .scelta input:hover + span {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .scelta input:checked + span {
+    background: var(--sage);
+    border-color: var(--sage);
+    color: var(--ink);
+  }
+  .scelta input:focus-visible + span {
+    outline: 2px solid var(--sage);
+    outline-offset: 2px;
+  }
+
+  .spunta {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px;
+    align-items: start;
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.78);
+    cursor: pointer;
+  }
+  .spunta input {
+    width: 19px;
+    height: 19px;
+    margin: 2px 0 0;
+    accent-color: var(--sage);
+    flex: 0 0 auto;
+    cursor: pointer;
+  }
+  .spunta a {
+    color: var(--sage);
+    text-underline-offset: 3px;
+  }
+  .spunta i {
+    color: var(--sage);
+    font-style: normal;
+  }
+  .modulo__nota {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.58);
+    text-align: center;
+  }
+  .modulo__nota i {
+    color: var(--sage);
+    font-style: normal;
+  }
+
+  .cta-modulo[hidden] {
+    display: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .cta-modulo:not([hidden]) {
+      animation: modulo-entra 0.32s var(--ease);
+    }
+    @keyframes modulo-entra {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  }
+
+  .modulo__aiuto {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.62);
+  }
+
+  /* La tendina è costruita da noi: il <select> nativo non si può vestire
+     nell'elenco aperto, lo disegna il sistema operativo. */
+  .scelte--tendine {
+    gap: 10px;
+  }
+  .tendina-box {
+    position: relative;
+  }
+  .pillola--apri {
+    position: relative;
+    padding-right: 34px;
+    transition:
+      background var(--t-fast),
+      border-color var(--t-fast),
+      color var(--t-fast);
+  }
+  .pillola--apri::after {
+    content: '';
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: translateY(-70%) rotate(45deg);
+    transition: transform var(--t-fast);
+  }
+  /* Aperta = verde con testo bianco, non sage: qui il sage vuol già dire
+     "l'ho scelto", un colore solo per due significati li confonderebbe. */
+  .pillola--apri[aria-expanded='true'] {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+  }
+  .pillola--apri[aria-expanded='true']::after {
+    transform: translateY(-30%) rotate(-135deg);
+  }
+
+  .tendina[hidden] {
+    display: none;
+  }
+  .tendina {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    z-index: 20;
+    min-width: max(100%, 260px);
+    max-width: min(420px, 84vw);
+    background: #1a1e16;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-dark);
+    padding: 7px;
+    display: grid;
+    gap: 2px;
+    max-height: 290px;
+    overflow: auto;
+  }
+  .tendina label {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 11px;
+    align-items: center;
+    padding: 10px 11px;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    font-size: 14.5px;
+    line-height: 1.35;
+    color: rgba(255, 255, 255, 0.9);
+    transition: background var(--t-fast);
+  }
+  .tendina label:hover {
+    background: rgba(255, 255, 255, 0.09);
+  }
+  .tendina label:has(input:checked) {
+    background: rgba(146, 176, 121, 0.16);
+  }
+  .tendina input {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    accent-color: var(--sage);
+    cursor: pointer;
+  }
+  .tendina label:focus-within {
+    outline: 2px solid var(--sage);
+    outline-offset: -2px;
+  }
+  @media (max-width: 600px) {
+    .tendina {
+      left: 0;
+      right: 0;
+      max-width: none;
+    }
+  }
+
+  /* Con una tendina aperta, quello che sta sotto si sfoca: la tendina
+     galleggia sopra il contenuto, senza questo due testi si sovrappongono.
+     Le pillole restano nitide — sono il comando appena premuto. */
+  .modulo:has(.tendina:not([hidden])) .scelti,
+  .modulo:has(.tendina:not([hidden])) .modulo__gruppo ~ * {
+    filter: blur(3px);
+    opacity: 0.55;
+    pointer-events: none;
+    transition:
+      filter var(--t-mid) var(--ease),
+      opacity var(--t-mid) var(--ease);
+  }
+  .modulo .scelti,
+  .modulo .modulo__gruppo ~ * {
+    transition:
+      filter var(--t-mid) var(--ease),
+      opacity var(--t-mid) var(--ease);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .modulo .scelti,
+    .modulo .modulo__gruppo ~ * {
+      transition: none;
+    }
+  }
+
+  .scelti[hidden] {
+    display: none;
+  }
+  .scelti {
+    margin-top: var(--s-3);
+    padding-top: var(--s-3);
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+  }
+  .scelti__lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 14px;
+    margin-top: 10px;
+  }
+  .gettone {
+    position: relative;
+    margin: 7px 7px 0 0;
+  }
+  .gettone > span {
+    display: inline-block;
+    padding: 9px 16px;
+    border-radius: var(--r-pill);
+    background: var(--sage);
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .gettone__x {
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    width: 22px;
+    height: 22px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+    background: var(--ink);
+    border: 2px solid var(--sage);
+    padding: 0;
+    transition:
+      background var(--t-fast),
+      transform var(--t-fast);
+  }
+  .gettone__x svg {
+    width: 9px;
+    height: 9px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+  .gettone__x:hover {
+    background: #3a4034;
+    transform: scale(1.12);
+  }
+  .gettone__x:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+
+  /* Più aria sopra: erano 32px fra la riga dei pulsanti e il primo campo,
+     il modulo sembrava attaccato al pulsante che lo apre. */
+  .cta-modulo {
+    margin-top: var(--s-6);
+    max-width: 760px;
+    margin-inline: auto;
+    text-align: left;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: var(--r-lg);
+    background: rgba(255, 255, 255, 0.045);
+    padding: clamp(22px, 3vw, 36px);
+  }
+  .cta-modulo__testa {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    margin-bottom: var(--s-3);
+  }
+  .cta-modulo__et {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sage);
+  }
+  .cta-modulo__chiudi {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px 8px 12px;
+    border-radius: var(--r-pill);
+    cursor: pointer;
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    color: rgba(255, 255, 255, 0.86);
+    font-family: var(--font-body);
+    font-size: 13.5px;
+    font-weight: 600;
+    transition:
+      background var(--t-fast),
+      border-color var(--t-fast),
+      color var(--t-fast);
+  }
+  .cta-modulo__chiudi svg {
+    width: 12px;
+    height: 12px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.6;
+    stroke-linecap: round;
+  }
+  .cta-modulo__chiudi:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #fff;
+  }
+  .cta-modulo__chiudi:focus-visible {
+    outline: 2px solid var(--sage);
+    outline-offset: 2px;
+  }
+  .cta-modulo .modulo {
+    margin-top: 0;
+  }
+</style>

@@ -5,19 +5,23 @@ interface Props {
   title: string;
   description?: string;
   image?: string;
+  organization?: boolean;
 }
 
-const { title, description = site.description, image } = Astro.props;
+const { title, description = site.description, image, organization = false } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const pageTitle = `${title} · ${site.name}`;
+const pageTitle = `${title} | ${site.name}`;
 ---
 
 <title>{pageTitle}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonicalURL} />
+<meta name="robots" content="index, follow" />
 
 <meta property="og:type" content="website" />
+<meta property="og:locale" content="it_IT" />
+<meta property="og:site_name" content={site.name} />
 <meta property="og:title" content={pageTitle} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonicalURL} />
@@ -26,3 +30,25 @@ const pageTitle = `${title} · ${site.name}`;
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={pageTitle} />
 <meta name="twitter:description" content={description} />
+
+{
+  organization && (
+    // Nessun Review/AggregateRating: dal 2019 Google non mostra le stelle
+    // per recensioni self-serving sul proprio sito — scelta deliberata.
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        '@id': `${site.url}/#organization`,
+        name: site.name,
+        url: `${site.url}/`,
+        description: site.description,
+        address: { '@type': 'PostalAddress', addressLocality: site.address.locality, addressRegion: site.address.region, addressCountry: site.address.country },
+        areaServed: { '@type': 'Country', name: 'Italia' },
+        contactPoint: [{ '@type': 'ContactPoint', contactType: 'customer service', availableLanguage: ['it'], url: `${site.url}/contatti/` }],
+        sameAs: site.social.map((s) => s.href),
+      })}
+    />
+  )
+}

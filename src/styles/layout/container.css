@@ -1,6 +1,143 @@
-.container {
-  width: 100%;
-  max-width: var(--container-max-width);
+.wrap {
+  max-width: var(--wrap);
   margin-inline: auto;
-  padding-inline: var(--space-4);
+  padding-inline: var(--s-3);
+}
+.wrap--wide {
+  max-width: var(--wrap-wide);
+}
+
+/* aria FRA una sezione e l'altra: l'unico bianco fra due palchi colorati */
+.section {
+  padding-block: var(--sp-fuori);
+}
+
+@media (min-width: 900px) {
+  .section--schermo .rail-head {
+    margin-top: var(--s-4);
+  }
+  .section--schermo .section-foot {
+    margin-top: var(--s-4);
+  }
+}
+
+/* Palco — blocco colorato a tutta larghezza, arrotondato: qui entra il
+   colore del sito, sempre dentro un contenitore con margine così i 56px
+   di raggio si vedono da tutti e quattro i lati. */
+.stage {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: var(--r-xl);
+  padding: var(--sp-dentro) 0;
+  max-width: 1440px;
+  margin-inline: auto;
+}
+
+/* fondo dei palchi: una sola famiglia — macchie morbide sfocate, cambia
+   solo la tinta, mai il linguaggio */
+.stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.stage--night {
+  background: var(--night);
+  color: var(--on-dark);
+}
+.stage--night::before {
+  background:
+    radial-gradient(48% 52% at 82% 8%, rgba(126, 200, 227, 0.34), transparent 62%),
+    radial-gradient(46% 50% at 14% 30%, rgba(138, 123, 224, 0.3), transparent 64%),
+    radial-gradient(52% 54% at 68% 88%, rgba(217, 107, 165, 0.26), transparent 66%),
+    radial-gradient(40% 44% at 30% 76%, rgba(146, 176, 121, 0.24), transparent 64%);
+}
+
+.stage--green {
+  background: linear-gradient(150deg, #416935, #22381b);
+  color: var(--on-dark);
+}
+
+.stage--sage {
+  background: var(--sage);
+  color: var(--ink);
+}
+
+/* Palco chiaro: carta pulita dentro un anello di gradiente. Non un
+   `border` (non accetta gradienti): un rettangolo pieno di gradiente
+   ritagliato al centro da due maschere sovrapposte in modalità
+   esclusione — resta visibile solo la differenza, cioè la cornice, spessa
+   quanto il padding. */
+.stage--light {
+  background: #ffffff;
+  color: var(--ink);
+}
+.stage--light::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  padding: 6px;
+  background: var(--grad);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.stage--night h2,
+.stage--night h3,
+.stage--green h2,
+.stage--green h3 {
+  color: var(--on-dark);
+}
+.stage--night .lead,
+.stage--green .lead {
+  color: var(--on-dark-soft);
+}
+
+/* Intestazioni di sezione: due impianti che si alternano */
+.head {
+  max-width: 860px;
+}
+.head--center {
+  text-align: center;
+  margin-inline: auto;
+}
+.head--split {
+  display: grid;
+  gap: var(--s-3);
+  max-width: none;
+}
+/* intestazione a tutta larghezza, elementi impilati: il titolo si prende
+   la riga intera e va a capo meno volte, il testo lo segue sotto */
+.head--largo {
+  max-width: none;
+}
+.head--largo .lead {
+  max-width: 70ch;
+  margin-top: var(--s-3);
+}
+@media (min-width: 960px) {
+  .head--split {
+    grid-template-columns: 1.7fr 1fr;
+    align-items: end;
+    gap: var(--s-5);
+  }
+  .head--split .lead {
+    margin-top: 0;
+  }
+}
+
+.section-foot {
+  margin-top: var(--s-6);
+  text-align: center;
 }

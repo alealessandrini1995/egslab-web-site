@@ -3,19 +3,37 @@ export interface NavItem {
   href: string;
 }
 
+export interface SocialLink {
+  label: string;
+  href: string;
+}
+
 export const site = {
-  name: 'Nome Sito',
-  url: 'https://example.com',
+  name: 'egslab',
+  url: 'https://www.egslab.it',
   lang: 'it',
-  description: 'Descrizione sintetica del sito, sostituire con i contenuti approvati.',
+  description:
+    "Laboratorio digitale multidisciplinare: siti web, landing page, automazione dei processi aziendali, logo, grafica pubblicitaria, stampa e social. Con sede a Chiavari (GE), lavoriamo in tutta Italia.",
   nav: [
-    { label: 'Home', href: '/' },
-    { label: 'Servizi', href: '/servizi' },
-    { label: 'Chi siamo', href: '/chi-siamo' },
-    { label: 'Contatti', href: '/contatti' },
+    { label: 'Servizi', href: '/servizi/' },
+    { label: 'Portfolio', href: '/portfolio/' },
+    { label: 'Chi siamo', href: '/chi-siamo/' },
+    { label: 'Testimonianze', href: '/testimonianze/' },
+    { label: 'Blog', href: '/blog/' },
+    { label: 'Contatti', href: '/contatti/' },
   ] satisfies NavItem[],
   contact: {
-    email: 'info@example.com',
-    phone: '+39 000 000 0000',
+    email: 'info@egslab.it',
+    whatsapp: 'https://wa.me/393441543497',
+  },
+  social: [
+    { label: 'Instagram', href: 'https://www.instagram.com/egslab' },
+    { label: 'Facebook', href: 'https://www.facebook.com/egslab' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/company/egslab' },
+  ] satisfies SocialLink[],
+  address: {
+    locality: 'Chiavari',
+    region: 'GE',
+    country: 'IT',
   },
 };

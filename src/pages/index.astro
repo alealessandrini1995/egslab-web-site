@@ -1,10 +1,31 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import BandaClienti from '../components/BandaClienti.astro';
+import ChiAiutiamo from '../components/ChiAiutiamo.astro';
+import Servizi from '../components/Servizi.astro';
+import PercheEgslab from '../components/PercheEgslab.astro';
+import ComeLavoriamo from '../components/ComeLavoriamo.astro';
+import Progetti from '../components/Progetti.astro';
+import Recensioni from '../components/Recensioni.astro';
+import Faq from '../components/Faq.astro';
+import DalBlog from '../components/DalBlog.astro';
+import CtaPreventivo from '../components/CtaPreventivo.astro';
+import Strumenti from '../components/Strumenti.astro';
+import { site } from '../config/site';
 ---
 
-<BaseLayout title="Home">
-  <section>
-    <h1>Home</h1>
-    <p>Contenuto segnaposto della pagina principale.</p>
-  </section>
+<BaseLayout title="Home" description={site.description} organization>
+  <Hero />
+  <BandaClienti />
+  <ChiAiutiamo />
+  <Servizi />
+  <PercheEgslab />
+  <ComeLavoriamo />
+  <Progetti />
+  <Recensioni />
+  <Faq />
+  <DalBlog />
+  <CtaPreventivo />
+  <Strumenti />
 </BaseLayout>

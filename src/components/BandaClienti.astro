@@ -1,0 +1,303 @@
+---
+import { clienti } from '../data/clienti';
+import { Image } from 'astro:assets';
+---
+
+<section class="section" aria-label="I nostri clienti">
+  <div class="wrap wrap--wide reveal">
+    <p class="clienti__intro">Hanno costruito il loro progetto con noi:</p>
+
+    <div class="banda__comandi">
+      <button class="banda__freccia" type="button" data-banda="prev" aria-label="Clienti precedenti">‹</button>
+      <button class="banda__freccia banda__moto" type="button" data-banda-moto aria-pressed="false">
+        <svg class="banda__pausa" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5v14M15 5v14"></path></svg>
+        <svg class="banda__play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7z"></path></svg>
+        <span class="sr-only">Metti in pausa lo scorrimento</span>
+      </button>
+      <button class="banda__freccia" type="button" data-banda="next" aria-label="Clienti successivi">›</button>
+    </div>
+
+    <div class="banda">
+      <div class="marquee" data-marquee>
+        <div class="marquee__track" data-marquee-track>
+          {
+            clienti.map((c) => (
+              <figure class="cli">
+                <Image class="cli__img" src={c.img} alt={c.nome} width={1050} height={600} loading="lazy" />
+                <figcaption class="cli__cap">
+                  <b>{c.nome}</b>
+                  <span>{c.categoria}</span>
+                </figcaption>
+              </figure>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function bandaClienti() {
+    const senzaAnimazioni = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const banda = document.querySelector<HTMLElement>('[data-marquee]');
+    const nastro = document.querySelector<HTMLElement>('[data-marquee-track]');
+    if (!banda || !nastro || !nastro.children.length) return;
+
+    const VELOCITA = 42;
+    let pos = 0,
+      ultimo = 0,
+      fermo = false,
+      inVista = true,
+      trascino = false,
+      xPartenza = 0,
+      posPartenza = 0;
+
+    function larghezza(el: Element) {
+      return el.getBoundingClientRect().width + parseFloat(getComputedStyle(el).marginRight || '0');
+    }
+
+    function ricicla() {
+      let giri = 0;
+      while (nastro!.firstElementChild && pos >= larghezza(nastro!.firstElementChild) && giri++ < 60) {
+        pos -= larghezza(nastro!.firstElementChild);
+        nastro!.appendChild(nastro!.firstElementChild);
+      }
+      while (pos < 0 && giri++ < 60) {
+        nastro!.insertBefore(nastro!.lastElementChild!, nastro!.firstElementChild);
+        pos += larghezza(nastro!.firstElementChild!);
+      }
+    }
+
+    function disegna() {
+      ricicla();
+      nastro!.style.transform = `translate3d(${(-pos).toFixed(2)}px,0,0)`;
+    }
+
+    function passo(ora: number) {
+      requestAnimationFrame(passo);
+      if (!ultimo) {
+        ultimo = ora;
+        return;
+      }
+      const dt = Math.min((ora - ultimo) / 1000, 0.05);
+      ultimo = ora;
+      if (senzaAnimazioni || fermo || trascino || !inVista || document.hidden) return;
+      pos += VELOCITA * dt;
+      disegna();
+    }
+
+    const bottoneMoto = document.querySelector<HTMLButtonElement>('[data-banda-moto]');
+    if (bottoneMoto) {
+      const etichetta = bottoneMoto.querySelector('.sr-only');
+      bottoneMoto.addEventListener('click', () => {
+        fermo = !fermo;
+        bottoneMoto.setAttribute('aria-pressed', String(fermo));
+        if (etichetta) etichetta.textContent = fermo ? 'Riprendi lo scorrimento' : 'Metti in pausa lo scorrimento';
+      });
+    }
+
+    banda.addEventListener('pointerdown', (e) => {
+      trascino = true;
+      xPartenza = e.clientX;
+      posPartenza = pos;
+      banda.setPointerCapture(e.pointerId);
+      banda.style.cursor = 'grabbing';
+    });
+    banda.addEventListener('pointermove', (e) => {
+      if (!trascino) return;
+      pos = posPartenza - (e.clientX - xPartenza);
+      disegna();
+    });
+    ['pointerup', 'pointercancel'].forEach((ev) => {
+      banda.addEventListener(ev, () => {
+        trascino = false;
+        banda.style.cursor = '';
+      });
+    });
+
+    document.querySelectorAll<HTMLButtonElement>('[data-banda]').forEach((b) => {
+      b.addEventListener('click', () => {
+        const w = larghezza(nastro!.firstElementChild!);
+        pos += b.dataset.banda === 'next' ? w : -w;
+        disegna();
+      });
+    });
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(([v]) => (inVista = v.isIntersecting), { threshold: 0 }).observe(banda);
+
+      new IntersectionObserver(
+        (v, oss) => {
+          if (!v[0].isIntersecting) return;
+          oss.disconnect();
+          nastro!.querySelectorAll<HTMLImageElement>('img').forEach((img) => {
+            img.loading = 'eager';
+            img.decode?.().catch(() => {});
+          });
+        },
+        { rootMargin: '800px 0px' }
+      ).observe(banda);
+    }
+
+    requestAnimationFrame(passo);
+  })();
+</script>
+
+<style>
+  .clienti__intro {
+    text-align: center;
+    margin-inline: auto;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(20px, 2.4vw, 30px);
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    color: var(--ink);
+  }
+
+  .banda {
+    position: relative;
+    margin-top: var(--s-5);
+  }
+  .marquee {
+    overflow: hidden;
+    padding-block: 22px;
+  }
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+  }
+  .cli {
+    margin-right: var(--s-2);
+  }
+
+  .banda::before,
+  .banda::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: clamp(40px, 7vw, 120px);
+    z-index: 2;
+    pointer-events: none;
+  }
+  .banda::before {
+    left: 0;
+    background: linear-gradient(90deg, var(--bg), rgba(255, 255, 255, 0));
+  }
+  .banda::after {
+    right: 0;
+    background: linear-gradient(270deg, var(--bg), rgba(255, 255, 255, 0));
+  }
+
+  .banda__comandi {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: var(--s-3);
+  }
+  .banda__freccia {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    font-size: 22px;
+    line-height: 1;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid var(--hairline);
+    box-shadow: var(--shadow-sm);
+    transition:
+      transform var(--t-fast) ease,
+      box-shadow var(--t-fast) ease,
+      background var(--t-fast);
+  }
+  .banda__freccia:hover {
+    box-shadow: var(--shadow-md);
+    transform: scale(1.06);
+  }
+
+  .banda__moto svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .banda__moto .banda__play {
+    fill: var(--ink);
+    stroke: none;
+  }
+  .banda__moto[aria-pressed='false'] .banda__play {
+    display: none;
+  }
+  .banda__moto[aria-pressed='true'] .banda__pausa {
+    display: none;
+  }
+  .banda__moto[aria-pressed='true'] {
+    background: var(--green);
+    border-color: transparent;
+  }
+  .banda__moto[aria-pressed='true'] svg {
+    stroke: #fff;
+    fill: #fff;
+  }
+  .banda__moto[aria-pressed='true'] .banda__play {
+    fill: #fff;
+  }
+
+  .cli {
+    flex: 0 0 clamp(200px, 46vw, 260px);
+    overflow: hidden;
+    border-radius: var(--r-md);
+    background: #fff;
+    border: 1px solid var(--hairline);
+    box-shadow: var(--shadow-sm);
+  }
+  .cli__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1050 / 600;
+    object-fit: cover;
+    background: var(--bg-soft);
+  }
+  .cli__cap {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 62px;
+    padding: 10px 12px;
+    text-align: center;
+    border-top: 1px solid var(--hairline);
+  }
+  .cli__cap b {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .cli__cap span {
+    display: block;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 3px;
+    line-height: 1.25;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__track {
+      will-change: auto;
+    }
+  }
+</style>
