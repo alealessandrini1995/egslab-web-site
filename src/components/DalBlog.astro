@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import ArtCard from './ArtCard.astro';
 import { perData, dataItaliana } from '../lib/blog';
+import { withBase } from '../lib/url';
 
 const articoli = perData(await getCollection('blog')).slice(0, 3);
 ---
@@ -20,7 +21,7 @@ const articoli = perData(await getCollection('blog')).slice(0, 3);
       {
         articoli.map((a) => (
           <ArtCard
-            href={`/blog/${a.id}/`}
+            href={withBase(`/blog/${a.id}/`)}
             categoria={a.data.category}
             data={dataItaliana(a.data.date)}
             titolo={a.data.title}
@@ -33,7 +34,7 @@ const articoli = perData(await getCollection('blog')).slice(0, 3);
     </div>
 
     <div class="giornale__coda reveal">
-      <a class="btn btn--green" href="/blog/">Leggi tutti gli articoli</a>
+      <a class="btn btn--green" href={withBase('/blog/')}>Leggi tutti gli articoli</a>
     </div>
   </div>
 </section>

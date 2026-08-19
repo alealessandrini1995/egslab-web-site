@@ -1,16 +1,18 @@
 ---
 import { site } from '../config/site';
 import Socials from './Socials.astro';
+import { withBase } from '../lib/url';
 
 const currentPath = Astro.url.pathname;
 function isActive(href: string) {
-  return currentPath === href || currentPath.startsWith(href);
+  const full = withBase(href);
+  return currentPath === full || currentPath.startsWith(full);
 }
 ---
 
 <header class="site-header">
   <div class="site-header__bar">
-    <a class="brand" href="/" aria-label="egslab — torna alla home">
+    <a class="brand" href={withBase('/')} aria-label="egslab — torna alla home">
       <span class="brand__badge">
         <svg class="brand__logo" viewBox="-120 -60 4439 1637" width="60" height="22" role="img" aria-label="egslab">
           <use href="#logo-egslab"></use>
@@ -29,7 +31,7 @@ function isActive(href: string) {
   <nav class="menu-panel" id="menu-principale" aria-label="Navigazione principale">
     {
       site.nav.map((item) => (
-        <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+        <a href={withBase(item.href)} aria-current={isActive(item.href) ? 'page' : undefined}>
           {item.label}
         </a>
       ))

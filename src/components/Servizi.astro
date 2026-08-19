@@ -1,6 +1,7 @@
 ---
 import { servizi, gruppi } from '../data/servizi';
 import SchedaServizio from './SchedaServizio.astro';
+import { withBase } from '../lib/url';
 ---
 
 <section class="section section--schermo" aria-labelledby="titolo-servizi">
@@ -35,7 +36,7 @@ import SchedaServizio from './SchedaServizio.astro';
       <button class="rail-btn" type="button" data-rail="next" aria-label="Servizi successivi">›</button>
     </div>
     <div class="section-foot reveal">
-      <a class="link" href="/servizi/">Vedi tutti i servizi</a>
+      <a class="link" href={withBase('/servizi/')}>Vedi tutti i servizi</a>
     </div>
   </div>
 </section>

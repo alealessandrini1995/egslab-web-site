@@ -1,5 +1,6 @@
 ---
 import { ragioni } from '../data/ragioni';
+import { withBase } from '../lib/url';
 ---
 
 <section class="section" aria-labelledby="titolo-perche">
@@ -15,7 +16,7 @@ import { ragioni } from '../data/ragioni';
               professionisti, ognuno con la propria specializzazione, coordinati da chi segue il tuo progetto
               dall'inizio alla fine.
             </p>
-            <p class="section-foot"><a class="btn btn--sage" href="/chi-siamo/">Scopri chi siamo</a></p>
+            <p class="section-foot"><a class="btn btn--sage" href={withBase('/chi-siamo/')}>Scopri chi siamo</a></p>
           </div>
 
           <div class="tiles perche__punti">

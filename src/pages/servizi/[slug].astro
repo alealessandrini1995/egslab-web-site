@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { servizi } from '../../data/servizi';
+
+export async function getStaticPaths() {
+  return servizi.map((servizio) => ({
+    params: { slug: servizio.slug },
+    props: { servizio },
+  }));
+}
+
+const { servizio } = Astro.props;
+---
+
+<BaseLayout title={servizio.nome}>
+  <section>
+    <h1>{servizio.nome}</h1>
+    <p>Contenuto segnaposto della pagina servizio.</p>
+  </section>
+</BaseLayout>

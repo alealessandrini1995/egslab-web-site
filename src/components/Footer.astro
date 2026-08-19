@@ -4,6 +4,7 @@ import { servizi } from '../data/servizi';
 import Socials from './Socials.astro';
 import qrBiglietto from '../assets/images/qr-biglietto-virtuale.webp';
 import { Image } from 'astro:assets';
+import { withBase } from '../lib/url';
 
 const menu = [{ label: 'Home', href: '/' }, ...site.nav];
 const year = new Date().getFullYear();
@@ -33,7 +34,7 @@ const year = new Date().getFullYear();
           {
             servizi.map((s) => (
               <li>
-                <a href={`/servizi/${s.slug}/`}>{s.nome}</a>
+                <a href={withBase(`/servizi/${s.slug}/`)}>{s.nome}</a>
               </li>
             ))
           }
@@ -46,7 +47,7 @@ const year = new Date().getFullYear();
           {
             menu.map((item) => (
               <li>
-                <a href={item.href}>{item.label}</a>
+                <a href={withBase(item.href)}>{item.label}</a>
               </li>
             ))
           }
@@ -59,14 +60,14 @@ const year = new Date().getFullYear();
         <div class="qr-slot">
           <Image class="qr-slot__img" src={qrBiglietto} alt="Codice QR del biglietto da visita virtuale di egslab" width={490} height={490} loading="lazy" />
         </div>
-        <p>oppure <a class="link" href="/contatti/">aprilo qui</a></p>
+        <p>oppure <a class="link" href={withBase('/contatti/')}>aprilo qui</a></p>
         <Socials class="fcard__social" />
       </div>
     </div>
 
     <div class="footer-bottom">
       <p>© {year} egslab — laboratorio digitale · Chiavari (GE) · Liguria · Lavoriamo in tutta Italia</p>
-      <p><a href="/privacy/">Privacy</a> · <a href="/cookie/">Cookie</a></p>
+      <p><a href={withBase('/privacy/')}>Privacy</a> · <a href={withBase('/cookie/')}>Cookie</a></p>
     </div>
   </div>
 </footer>

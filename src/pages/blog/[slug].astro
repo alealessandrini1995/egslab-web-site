@@ -5,6 +5,7 @@ import ArtCard from '../../components/ArtCard.astro';
 import { correlati as trovaCorrelati, dataItaliana } from '../../lib/blog';
 import { servizi } from '../../data/servizi';
 import { Image } from 'astro:assets';
+import { withBase } from '../../lib/url';
 
 export async function getStaticPaths() {
   const articoli = await getCollection('blog');
@@ -25,8 +26,8 @@ const correlati = trovaCorrelati(tutti, articolo);
     <div class="wrap">
       <nav class="briciole" aria-label="Dove ti trovi">
         <ol>
-          <li><a href="/">Home</a></li>
-          <li><a href="/blog/">Blog</a></li>
+          <li><a href={withBase('/')}>Home</a></li>
+          <li><a href={withBase('/blog/')}>Blog</a></li>
           <li aria-current="page">{articolo.data.shortTitle}</li>
         </ol>
       </nav>
@@ -54,12 +55,12 @@ const correlati = trovaCorrelati(tutti, articolo);
         <div class="prosa__servizio">
           <p class="prosa__servizio-et">Il servizio di cui parla questo articolo</p>
           <p class="prosa__servizio-nome">
-            <a class="link" href={`/servizi/${servizio.slug}/`}>{servizio.nome}</a>
+            <a class="link" href={withBase(`/servizi/${servizio.slug}/`)}>{servizio.nome}</a>
           </p>
         </div>
 
         <div class="art-ritorno">
-          <a class="btn btn--ghost" href="/blog/">Torna a tutti gli articoli</a>
+          <a class="btn btn--ghost" href={withBase('/blog/')}>Torna a tutti gli articoli</a>
         </div>
       </div>
     </div>
@@ -78,7 +79,7 @@ const correlati = trovaCorrelati(tutti, articolo);
           <div class={`giornale giornale--${correlati.length}`}>
             {correlati.map((a) => (
               <ArtCard
-                href={`/blog/${a.id}/`}
+                href={withBase(`/blog/${a.id}/`)}
                 categoria={a.data.category}
                 data={dataItaliana(a.data.date)}
                 titolo={a.data.title}

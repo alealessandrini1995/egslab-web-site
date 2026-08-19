@@ -1,5 +1,6 @@
 ---
 import { site } from '../config/site';
+import { withBase } from '../lib/url';
 ---
 
 <section class="hero">
@@ -27,7 +28,7 @@ import { site } from '../config/site';
         </p>
         <div class="hero__cta">
           <a class="btn btn--green" href={site.contact.whatsapp} target="_blank" rel="noopener">Scrivici su WhatsApp</a>
-          <a class="btn btn--ghost" href="/portfolio/">Guarda i nostri progetti</a>
+          <a class="btn btn--ghost" href={withBase('/portfolio/')}>Guarda i nostri progetti</a>
         </div>
       </div>
     </div>

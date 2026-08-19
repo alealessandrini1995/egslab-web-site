@@ -10,7 +10,8 @@ export interface SocialLink {
 
 export const site = {
   name: 'egslab',
-  url: 'https://www.egslab.it',
+  // Fase dev: allineato a astro.config.mjs (site + base), sarà sostituito dal dominio definitivo al lancio.
+  url: 'https://alessandrini1995.github.io/egslab-web-site',
   lang: 'it',
   description:
     "Laboratorio digitale multidisciplinare: siti web, landing page, automazione dei processi aziendali, logo, grafica pubblicitaria, stampa e social. Con sede a Chiavari (GE), lavoriamo in tutta Italia.",

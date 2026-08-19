@@ -17,7 +17,8 @@ const pageTitle = `${title} | ${site.name}`;
 <title>{pageTitle}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonicalURL} />
-<meta name="robots" content="index, follow" />
+{/* Ambiente dev su GitHub Pages: da riportare a "index, follow" al lancio sul dominio definitivo. */}
+<meta name="robots" content="noindex, nofollow" />
 
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="it_IT" />

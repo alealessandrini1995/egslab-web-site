@@ -1,6 +1,7 @@
 ---
 import { progetti } from '../data/progetti';
 import { Image } from 'astro:assets';
+import { withBase } from '../lib/url';
 ---
 
 <section class="section" aria-labelledby="titolo-progetti">
@@ -33,7 +34,7 @@ import { Image } from 'astro:assets';
                   </p>
                   <p class="caso__frase">{p.frase}</p>
                   <p class="caso__cta">
-                    <a class="btn btn--ghost" href="/portfolio/">Scopri il progetto</a>
+                    <a class="btn btn--ghost" href={withBase('/portfolio/')}>Scopri il progetto</a>
                   </p>
                 </div>
               </article>
@@ -54,7 +55,7 @@ import { Image } from 'astro:assets';
     </div>
 
     <div class="section-foot reveal" style="text-align:left">
-      <a class="link" href="/portfolio/">Vedi tutto il portfolio</a>
+      <a class="link" href={withBase('/portfolio/')}>Vedi tutto il portfolio</a>
     </div>
   </div>
 </section>

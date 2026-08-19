@@ -1,6 +1,7 @@
 ---
 import type { Servizio } from '../data/servizi';
 import { Image } from 'astro:assets';
+import { withBase } from '../lib/url';
 
 interface Props {
   servizio: Servizio;
@@ -22,7 +23,7 @@ const { servizio } = Astro.props;
   </div>
   <div class="scheda__corpo">
     <h3 class="scheda__titolo">
-      <a class="scheda__link" href={`/servizi/${servizio.slug}/`}>{servizio.nome}</a>
+      <a class="scheda__link" href={withBase(`/servizi/${servizio.slug}/`)}>{servizio.nome}</a>
     </h3>
     <p class="scheda__frase">{servizio.frase}</p>
   </div>

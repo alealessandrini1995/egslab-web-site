@@ -1,61 +1,64 @@
 /* Font autoospitati: nessuna richiesta a un dominio esterno, nessun IP
    condiviso con terzi, il testo resta leggibile anche se la rete è lenta
-   (font-display:swap ripiega sul font di sistema finché non è pronto). */
+   (font-display:swap ripiega sul font di sistema finché non è pronto).
+   I percorsi sono assoluti su un file public/: Vite non applica il `base`
+   di astro.config.mjs dentro url() in un .css semplice, quindi il prefisso
+   "/egslab-web-site" qui sotto va tenuto allineato a mano a quel valore. */
 @font-face {
   font-family: 'League Spartan';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('/fonts/league-spartan-400.woff2') format('woff2');
+  src: url('/egslab-web-site/fonts/league-spartan-400.woff2') format('woff2');
 }
 @font-face {
   font-family: 'League Spartan';
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url('/fonts/league-spartan-500.woff2') format('woff2');
+  src: url('/egslab-web-site/fonts/league-spartan-500.woff2') format('woff2');
 }
 @font-face {
   font-family: 'League Spartan';
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url('/fonts/league-spartan-600.woff2') format('woff2');
+  src: url('/egslab-web-site/fonts/league-spartan-600.woff2') format('woff2');
 }
 @font-face {
   font-family: 'League Spartan';
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url('/fonts/league-spartan-700.woff2') format('woff2');
+  src: url('/egslab-web-site/fonts/league-spartan-700.woff2') format('woff2');
 }
 @font-face {
   font-family: 'League Spartan';
   font-style: normal;
   font-weight: 800;
   font-display: swap;
-  src: url('/fonts/league-spartan-800.woff2') format('woff2');
+  src: url('/egslab-web-site/fonts/league-spartan-800.woff2') format('woff2');
 }
 @font-face {
   font-family: 'Inter';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('/fonts/inter-400.woff2') format('woff2');
+  src: url('/egslab-web-site/fonts/inter-400.woff2') format('woff2');
 }
 @font-face {
   font-family: 'Inter';
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url('/fonts/inter-500.woff2') format('woff2');
+  src: url('/egslab-web-site/fonts/inter-500.woff2') format('woff2');
 }
 @font-face {
   font-family: 'Inter';
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url('/fonts/inter-600.woff2') format('woff2');
+  src: url('/egslab-web-site/fonts/inter-600.woff2') format('woff2');
 }
 
 h1,

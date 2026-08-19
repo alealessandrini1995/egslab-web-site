@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArtCard from '../../components/ArtCard.astro';
 import { perData, dataItaliana } from '../../lib/blog';
+import { withBase } from '../../lib/url';
 
 const articoli = perData(await getCollection('blog'));
 ---
@@ -12,7 +13,7 @@ const articoli = perData(await getCollection('blog'));
     <div class="wrap wrap--wide">
       <nav class="briciole" aria-label="Dove ti trovi">
         <ol>
-          <li><a href="/">Home</a></li>
+          <li><a href={withBase('/')}>Home</a></li>
           <li aria-current="page">Blog</li>
         </ol>
       </nav>
@@ -29,7 +30,7 @@ const articoli = perData(await getCollection('blog'));
         {
           articoli.map((a) => (
             <ArtCard
-              href={`/blog/${a.id}/`}
+              href={withBase(`/blog/${a.id}/`)}
               categoria={a.data.category}
               data={dataItaliana(a.data.date)}
               titolo={a.data.title}
