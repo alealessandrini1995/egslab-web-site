@@ -1,0 +1,5 @@
+# SEO
+
+## Metadati globali
+
+## Pagine
