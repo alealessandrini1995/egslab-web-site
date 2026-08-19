@@ -157,6 +157,7 @@ const { title, description, image, organization } = Astro.props;
       let w = 0,
         h = 0,
         t = 0,
+        ultimo: number | null = null,
         attivo = true,
         girando = false;
       const densita = canvas.dataset.canvas === 'footer' ? 16 : 26;
@@ -181,13 +182,16 @@ const { title, description, image, organization } = Astro.props;
         ctx!.fillRect(0, 0, w, h);
       }
 
-      function disegna() {
+      function disegna(adesso: number) {
         if (!attivo) {
           girando = false;
+          ultimo = null;
           return;
         }
         girando = true;
-        t++;
+        const delta = ultimo === null ? 0 : Math.min(adesso - ultimo, 100);
+        ultimo = adesso;
+        t += (delta / 1000) * 60;
         ctx!.fillStyle = cScia;
         ctx!.fillRect(0, 0, w, h);
         ctx!.lineWidth = Math.max(1, w / 1400);
